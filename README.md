@@ -22,15 +22,15 @@ Cancel anytime with one click
 
 ## 🏗️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Smart Contracts** | Rust + Soroban SDK |
-| **Frontend** | Next.js 14 (App Router), TypeScript, TailwindCSS, shadcn/ui |
-| **Wallet** | StellarWalletsKit (Freighter, xBull, Albedo) |
-| **SDK** | TypeScript (`@paycycle/sdk`) |
-| **Backend** | Node.js (Express) + PostgreSQL |
-| **CI/CD** | GitHub Actions |
-| **Deployment** | Vercel (frontend), Stellar Testnet → Mainnet |
+| Layer               | Technology                                                  |
+| ------------------- | ----------------------------------------------------------- |
+| **Smart Contracts** | Rust + Soroban SDK                                          |
+| **Frontend**        | Next.js 14 (App Router), TypeScript, TailwindCSS, shadcn/ui |
+| **Wallet**          | StellarWalletsKit (Freighter, xBull, Albedo)                |
+| **SDK**             | TypeScript (`@paycycle/sdk`)                                |
+| **Backend**         | Node.js (Express) + PostgreSQL                              |
+| **CI/CD**           | GitHub Actions                                              |
+| **Deployment**      | Vercel (frontend), Stellar Testnet → Mainnet                |
 
 ## 📦 Monorepo Structure
 
@@ -66,11 +66,11 @@ cd sdk && npm install && npm run build
 
 ## 📜 Deployed Contracts (Testnet)
 
-| Contract | Address | Description |
-|----------|---------|-------------|
-| Subscription | `TODO` | Core recurring payments protocol |
-| PLC Token | `TODO` | SEP-41 reward token |
-| Keeper | `TODO` | Payment execution + inter-contract calls |
+| Contract     | Address | Description                              |
+| ------------ | ------- | ---------------------------------------- |
+| Subscription | `TODO`  | Core recurring payments protocol         |
+| PLC Token    | `TODO`  | SEP-41 reward token                      |
+| Keeper       | `TODO`  | Payment execution + inter-contract calls |
 
 ## 🔗 Links
 
@@ -79,21 +79,12 @@ cd sdk && npm install && npm run build
 - **Demo Video:** TODO
 - **Docs:** [docs/](./docs/)
 
-## 🎯 Belt Progression (Stellar Journey to Mastery)
-
-- [ ] ⚪ White Belt — Wallet + balance + XLM transaction
-- [ ] 🟡 Yellow Belt — Subscription contract + frontend calls
-- [ ] 🟠 Orange Belt — Full subscription lifecycle mini-dApp
-- [ ] 🟢 Green Belt — SDK + token + keeper + CI/CD
-- [ ] 🔵 Blue Belt — MVP + 5+ users + feedback iteration
-- [ ] ⚫ Black Belt — 30+ users + metrics + monitoring + fee sponsorship
-
 ## 👥 Testnet Users
 
-| # | Wallet Address | Role | Date | Source |
-|---|---------------|------|------|--------|
-| 1 | `G...` | subscriber | YYYY-MM-DD | Discord |
-| ... | ... | ... | ... | ... |
+| #   | Wallet Address | Role       | Date       | Source  |
+| --- | -------------- | ---------- | ---------- | ------- |
+| 1   | `G...`         | subscriber | YYYY-MM-DD | Discord |
+| ... | ...            | ...        | ...        | ...     |
 
 ## 📄 License
 
