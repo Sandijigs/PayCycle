@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+target/
+dist/
+.next/
+out/
+build/
+
+# Environment
+.env
+.env.local
+.env.production
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rust
+**/*.rs.bk
+Cargo.lock
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.log
+npm-debug.log*
