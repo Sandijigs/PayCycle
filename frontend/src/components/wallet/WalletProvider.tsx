@@ -7,6 +7,8 @@ import {
   ISupportedWallet,
   FREIGHTER_ID,
   FreighterModule,
+  xBullModule,
+  LobstrModule,
 } from "@creit.tech/stellar-wallets-kit";
 
 interface WalletContextType {
@@ -46,7 +48,7 @@ export default function WalletProvider({
     const walletKit = new StellarWalletsKit({
       network: network,
       selectedWalletId: FREIGHTER_ID,
-      modules: [new FreighterModule()],
+      modules: [new FreighterModule(), new xBullModule(), new LobstrModule()],
     });
 
     setKit(walletKit);
