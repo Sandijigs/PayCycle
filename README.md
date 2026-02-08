@@ -14,7 +14,9 @@ User retains full custody until exact payment moment
 Cancel anytime with one click
 ```
 
-![PayCycle Dashboard](docs/screenshots/paycycle-dashboard.png)
+
+
+<img width="1635" height="968" alt="Screenshot 2026-02-08 at 1 29 05 am" src="https://github.com/user-attachments/assets/45425578-f6cb-46bc-9626-26c70dc85de7" />
 
 ---
 
