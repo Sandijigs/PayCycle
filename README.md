@@ -14,8 +14,6 @@ User retains full custody until exact payment moment
 Cancel anytime with one click
 ```
 
-
-
 <img width="1635" height="968" alt="Screenshot 2026-02-08 at 1 29 05 am" src="https://github.com/user-attachments/assets/45425578-f6cb-46bc-9626-26c70dc85de7" />
 
 ---
@@ -37,10 +35,10 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 
 ## Deployed Contracts
 
-| Contract            | Network | Address                                                      |
-| ------------------- | ------- | ------------------------------------------------------------ |
-| Subscription v1     | Testnet | `CAAWHQ5VETZSR54RNBASRKSCBTRI773XVPXTW7D3VKYB2G5PLBZNXVQS` |
-| XLM SAC (Native)    | Testnet | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` |
+| Contract         | Network | Address                                                    |
+| ---------------- | ------- | ---------------------------------------------------------- |
+| Subscription v1  | Testnet | `CAAWHQ5VETZSR54RNBASRKSCBTRI773XVPXTW7D3VKYB2G5PLBZNXVQS` |
+| XLM SAC (Native) | Testnet | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` |
 
 [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CAAWHQ5VETZSR54RNBASRKSCBTRI773XVPXTW7D3VKYB2G5PLBZNXVQS)
 
@@ -48,7 +46,7 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 
 ## Features
 
-### White Belt — Wallet & Transactions
+### Wallet & Transactions
 
 | Feature              | Status | Description                                               |
 | -------------------- | ------ | --------------------------------------------------------- |
@@ -60,17 +58,17 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | Transaction Explorer | Done   | Direct link to Stellar Expert for submitted transactions  |
 | Account Creation     | Done   | Auto-detect unfunded destinations and use `createAccount` |
 
-### Yellow Belt — Smart Contract & Subscriptions
+### Smart Contract & Subscriptions
 
-| Feature                  | Status | Description                                                  |
-| ------------------------ | ------ | ------------------------------------------------------------ |
-| Subscription Contract    | Done   | Soroban smart contract with plans, subscriptions, payments   |
-| 9 Unit Tests             | Done   | Full test coverage: init, create, subscribe, pay, cancel, pause/resume |
-| Testnet Deployment       | Done   | Contract deployed and initialized on Stellar Testnet         |
-| Frontend Integration     | Done   | `useSubscription` hook with full Soroban RPC interaction     |
-| Contract Error Handling  | Done   | 12 error types mapped to user-friendly messages              |
-| Multi-Wallet Support     | Done   | Freighter, xBull, and Lobstr via StellarWalletsKit           |
-| Token Allowance Pattern  | Done   | `approve` + `transfer_from` for keeper-executable payments   |
+| Feature                 | Status | Description                                                            |
+| ----------------------- | ------ | ---------------------------------------------------------------------- |
+| Subscription Contract   | Done   | Soroban smart contract with plans, subscriptions, payments             |
+| 9 Unit Tests            | Done   | Full test coverage: init, create, subscribe, pay, cancel, pause/resume |
+| Testnet Deployment      | Done   | Contract deployed and initialized on Stellar Testnet                   |
+| Frontend Integration    | Done   | `useSubscription` hook with full Soroban RPC interaction               |
+| Contract Error Handling | Done   | 12 error types mapped to user-friendly messages                        |
+| Multi-Wallet Support    | Done   | Freighter, xBull, and Lobstr via StellarWalletsKit                     |
+| Token Allowance Pattern | Done   | `approve` + `transfer_from` for keeper-executable payments             |
 
 ### Subscription Contract Functions
 
@@ -250,6 +248,7 @@ The contract uses typed storage keys (`DataKey` enum) for Soroban's instance and
 - **Persistent storage** — Individual plans and subscriptions (entity-scoped, high-TTL)
 
 The payment model uses the **approve + transfer_from** pattern:
+
 1. Subscriber calls `token.approve(contract, amount, expiry)` to grant the contract a spending allowance
 2. Anyone (keeper, merchant, subscriber) can call `execute_payment(sub_id)` when a payment is due
 3. The contract calls `token.transfer_from(contract, subscriber, merchant, amount)` — auth comes from the contract as spender, not the subscriber
@@ -259,20 +258,20 @@ The payment model uses the **approve + transfer_from** pattern:
 
 The contract defines 12 typed errors (`PayCycleError`) that are mapped to user-friendly messages in the frontend:
 
-| Code | Error               | Message                                       |
-| ---- | ------------------- | --------------------------------------------- |
-| 1    | NotAuthorized       | Not authorized to perform this action         |
-| 2    | PlanNotFound        | Plan not found                                |
-| 3    | SubscriptionNotFound| Subscription not found                        |
-| 4    | InvalidStatus       | Invalid subscription status for this operation|
-| 5    | InsufficientBalance | Insufficient balance                          |
-| 6    | PaymentNotDue       | Payment is not due yet                        |
-| 7    | ExceedsSpendingCap  | Amount exceeds spending cap                   |
-| 8    | PlanInactive        | Plan is inactive                              |
-| 9    | AlreadySubscribed   | Already subscribed to this plan               |
-| 10   | IntervalTooShort    | Interval too short (min 1 hour)               |
-| 11   | AmountTooLow        | Amount must be greater than zero              |
-| 12   | AlreadyInitialized  | Contract is already initialized               |
+| Code | Error                | Message                                        |
+| ---- | -------------------- | ---------------------------------------------- |
+| 1    | NotAuthorized        | Not authorized to perform this action          |
+| 2    | PlanNotFound         | Plan not found                                 |
+| 3    | SubscriptionNotFound | Subscription not found                         |
+| 4    | InvalidStatus        | Invalid subscription status for this operation |
+| 5    | InsufficientBalance  | Insufficient balance                           |
+| 6    | PaymentNotDue        | Payment is not due yet                         |
+| 7    | ExceedsSpendingCap   | Amount exceeds spending cap                    |
+| 8    | PlanInactive         | Plan is inactive                               |
+| 9    | AlreadySubscribed    | Already subscribed to this plan                |
+| 10   | IntervalTooShort     | Interval too short (min 1 hour)                |
+| 11   | AmountTooLow         | Amount must be greater than zero               |
+| 12   | AlreadyInitialized   | Contract is already initialized                |
 
 ### Frontend Integration
 
@@ -326,14 +325,14 @@ The UI uses a custom brand design system built on CSS custom properties and Tail
 
 PayCycle follows the Stellar Journey to Mastery belt progression:
 
-| Belt            | Focus                                                        | Status  |
-| --------------- | ------------------------------------------------------------ | ------- |
-| **White Belt**  | Wallet integration, XLM transfers, testnet setup             | Done    |
+| Belt            | Focus                                                           | Status  |
+| --------------- | --------------------------------------------------------------- | ------- |
+| **White Belt**  | Wallet integration, XLM transfers, testnet setup                | Done    |
 | **Yellow Belt** | Soroban subscription contract, unit tests, frontend integration | Current |
-| **Orange Belt** | Subscription dashboard, plan management, payment execution   | Planned |
-| **Green Belt**  | PLC token (SEP-41), keeper contract, inter-contract calls    | Planned |
-| **Blue Belt**   | TypeScript SDK, merchant integration API, CI/CD pipeline     | Planned |
-| **Black Belt**  | Mainnet launch, security audit, user acquisition (25+ users) | Planned |
+| **Orange Belt** | Subscription dashboard, plan management, payment execution      | Planned |
+| **Green Belt**  | PLC token (SEP-41), keeper contract, inter-contract calls       | Planned |
+| **Blue Belt**   | TypeScript SDK, merchant integration API, CI/CD pipeline        | Planned |
+| **Black Belt**  | Mainnet launch, security audit, user acquisition (25+ users)    | Planned |
 
 ### Upcoming Features
 
