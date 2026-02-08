@@ -1,6 +1,7 @@
 "use client";
 
 import SendXLM from "@/components/transaction/SendXLM";
+import SubscriptionTest from "@/components/transaction/SubscriptionTest";
 import { useWallet } from "@/hooks/useWallet";
 import { useBalance } from "@/hooks/useBalance";
 import { ArrowRight, Shield, Zap, Clock, Droplets, Loader2 } from "lucide-react";
@@ -143,6 +144,13 @@ export default function Home() {
       {isConnected && (
         <section className="max-w-xl mx-auto">
           <SendXLM />
+        </section>
+      )}
+
+      {/* Subscription Contract Test */}
+      {isConnected && (
+        <section className="max-w-xl mx-auto">
+          <SubscriptionTest />
         </section>
       )}
     </div>
