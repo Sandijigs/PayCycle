@@ -1,11 +1,7 @@
-// TODO: White Belt — useWallet hook
-// Returns: address, isConnected, connect(), disconnect(), network
+"use client";
+
+import { useWalletContext } from "@/components/wallet/WalletProvider";
+
 export function useWallet() {
-  return {
-    address: null as string | null,
-    isConnected: false,
-    connect: async () => {},
-    disconnect: async () => {},
-    network: "testnet",
-  };
+  return useWalletContext();
 }
