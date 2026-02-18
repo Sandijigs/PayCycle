@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ConnectButton from "@/components/wallet/ConnectButton";
@@ -36,6 +37,27 @@ export default function RootLayout({
                   <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                   Testnet
                 </span>
+              </div>
+              {/* Navigation links */}
+              <div className="hidden sm:flex items-center gap-1">
+                <Link
+                  href="/"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/plans"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  My Plans
+                </Link>
+                <Link
+                  href="/subscribe"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Subscribe
+                </Link>
               </div>
               <ConnectButton />
             </nav>
