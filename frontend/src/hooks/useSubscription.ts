@@ -5,9 +5,8 @@ import { useWallet } from "@/hooks/useWallet";
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { SOROBAN_RPC_URL, NETWORK_PASSPHRASE } from "@/lib/stellar";
 import { CONTRACTS } from "@/lib/contracts";
-import type { PlanData, CreatePlanParams } from "@/types/subscription";
+import type { PlanData, SubscriptionData, CreatePlanParams, TxStatus } from "@/types/subscription";
 import { parseContractError } from "@/types/subscription";
-import type { TxStatus } from "@/types/subscription";
 
 const CONTRACT_ID = CONTRACTS.subscription;
 
@@ -314,6 +313,48 @@ export function useSubscription() {
     [address, invokeContract]
   );
 
+  /** Get a single subscription by ID. */
+  const getSubscription = useCallback(
+    async (subscriptionId: number): Promise<SubscriptionData> => {
+      const result = await queryContract(
+        "get_subscription",
+        StellarSdk.nativeToScVal(subscriptionId, { type: "u64" }),
+      );
+
+      const data = StellarSdk.scValToNative(result);
+      return {
+        id: subscriptionId,
+        subscriber: data.subscriber,
+        planId: Number(data.plan_id),
+        maxAmount: BigInt(data.max_amount),
+        status: mapSubscriptionStatus(data.status),
+        lastPayment: Number(data.last_payment),
+        nextPayment: Number(data.next_payment),
+        paymentsMade: Number(data.payments_made),
+        createdAt: Number(data.created_at),
+      };
+    },
+    [queryContract]
+  );
+
+  /** Get all subscription IDs for a user address. */
+  const getUserSubscriptions = useCallback(
+    async (userAddress: string): Promise<number[]> => {
+      const addr = new StellarSdk.Address(userAddress);
+      const result = await queryContract(
+        "get_user_subscriptions",
+        addr.toScVal(),
+      );
+
+      const native = StellarSdk.scValToNative(result);
+      if (Array.isArray(native)) {
+        return native.map((id: any) => Number(id));
+      }
+      return [];
+    },
+    [queryContract]
+  );
+
   /** Reset transaction state to idle. */
   const resetTx = useCallback(() => {
     setTxStatus("idle");
@@ -333,6 +374,8 @@ export function useSubscription() {
     getPlan,
     getPlanCount,
     getMerchantPlans,
+    getSubscription,
+    getUserSubscriptions,
     // State
     isLoading,
     error,
@@ -348,6 +391,15 @@ export function useSubscription() {
 function mapPlanStatus(raw: unknown): "Active" | "Paused" | "Cancelled" {
   // scValToNative decodes Soroban enums differently depending on sdk version.
   // Typically it's a string like "Active" or an object { tag: "Active" }.
+  if (typeof raw === "string") return raw as any;
+  if (typeof raw === "object" && raw !== null && "tag" in raw) {
+    return (raw as { tag: string }).tag as any;
+  }
+  return "Active"; // fallback
+}
+
+/** Map Soroban enum variant to TypeScript SubscriptionStatus string */
+function mapSubscriptionStatus(raw: unknown): "Active" | "Paused" | "Cancelled" | "Expired" {
   if (typeof raw === "string") return raw as any;
   if (typeof raw === "object" && raw !== null && "tag" in raw) {
     return (raw as { tag: string }).tag as any;
