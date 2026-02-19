@@ -86,7 +86,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
 
       const maxAmountStroops = BigInt(Math.round(maxAmountValue * 10 ** decimals));
 
-      const subscriptionId = await subscribe(plan.id, maxAmountStroops);
+      await subscribe(plan.id, maxAmountStroops);
 
       // Wait a moment for success state to show
       setTimeout(() => onSuccess(), 2000);
@@ -141,7 +141,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
                 <div className="flex-1 text-sm">
                   <p className="font-medium text-blue-500 mb-1">About spending caps</p>
                   <p className="text-muted-foreground">
-                    You'll approve the contract to debit up to this amount per payment cycle. This protects you if the plan price changes.
+                    You&apos;ll approve the contract to debit up to this amount per payment cycle. This protects you if the plan price changes.
                   </p>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
                 <div className="flex-1 text-sm">
                   <p className="font-medium text-amber-500 mb-1">Wallet approval required</p>
                   <p className="text-muted-foreground">
-                    You'll be asked to approve the subscription contract to spend your tokens. This is a standard Stellar token approval.
+                    You&apos;ll be asked to approve the subscription contract to spend your tokens. This is a standard Stellar token approval.
                   </p>
                 </div>
               </div>
