@@ -360,3 +360,150 @@ fn test_unauthorized_cancel() {
     let result = client.try_cancel(&user_b, &sub_id);
     assert!(result.is_err());
 }
+
+#[test]
+fn test_multiple_subscriptions_same_plan() {
+    let (env, admin, merchant, subscriber, fee_collector) = create_test_env();
+    let contract_id = env.register_contract(None, SubscriptionContract);
+    let client = SubscriptionContractClient::new(&env, &contract_id);
+    let (token_address, token_client, token_admin_client) = setup_token(&env, &admin);
+
+    client.initialize(&admin, &50, &fee_collector);
+
+    let plan_name = String::from_str(&env, "Pro Monthly");
+    let plan_id = client.create_plan(
+        &merchant,
+        &token_address,
+        &10_0000000,
+        &86400,
+        &plan_name,
+    );
+
+    // Subscriber A
+    token_admin_client.mint(&subscriber, &1_000_0000000);
+    token_client.approve(&subscriber, &contract_id, &15_0000000, &1_000_000);
+    let sub_id_a = client.subscribe(&subscriber, &plan_id, &15_0000000);
+
+    // Subscriber B
+    let subscriber_b = Address::generate(&env);
+    token_admin_client.mint(&subscriber_b, &1_000_0000000);
+    token_client.approve(&subscriber_b, &contract_id, &15_0000000, &1_000_000);
+    let sub_id_b = client.subscribe(&subscriber_b, &plan_id, &15_0000000);
+
+    // Verify both subscriptions exist
+    assert_eq!(sub_id_a, 1);
+    assert_eq!(sub_id_b, 2);
+    assert_eq!(client.get_sub_count(), 2);
+
+    // Verify plan subscriber count is 2
+    let plan = client.get_plan(&plan_id);
+    assert_eq!(plan.subscriber_count, 2);
+
+    // Verify each user has their own subscription list
+    let subs_a = client.get_user_subscriptions(&subscriber);
+    let subs_b = client.get_user_subscriptions(&subscriber_b);
+    assert_eq!(subs_a.len(), 1);
+    assert_eq!(subs_b.len(), 1);
+    assert_eq!(subs_a.get(0).unwrap(), sub_id_a);
+    assert_eq!(subs_b.get(0).unwrap(), sub_id_b);
+}
+
+#[test]
+fn test_execute_payment_multiple_cycles() {
+    let (env, admin, merchant, subscriber, fee_collector) = create_test_env();
+    let contract_id = env.register_contract(None, SubscriptionContract);
+    let client = SubscriptionContractClient::new(&env, &contract_id);
+    let (token_address, token_client, token_admin_client) = setup_token(&env, &admin);
+
+    client.initialize(&admin, &50, &fee_collector); // 0.5% fee
+
+    let plan_name = String::from_str(&env, "Daily Plan");
+    let plan_id = client.create_plan(
+        &merchant,
+        &token_address,
+        &10_0000000, // 10 tokens
+        &86400,      // daily
+        &plan_name,
+    );
+
+    token_admin_client.mint(&subscriber, &1_000_0000000);
+    // Approve enough for many cycles
+    token_client.approve(&subscriber, &contract_id, &500_0000000, &1_000_000);
+    let sub_id = client.subscribe(&subscriber, &plan_id, &15_0000000);
+
+    // Execute 3 consecutive payment cycles
+    for cycle in 1..=3u32 {
+        env.ledger().with_mut(|li| {
+            li.timestamp += 86400; // advance 1 day
+        });
+
+        let result = client.execute_payment(&sub_id);
+        assert_eq!(result, true);
+
+        let subscription = client.get_subscription(&sub_id);
+        assert_eq!(subscription.payments_made, cycle);
+    }
+
+    // Verify total amounts after 3 payments
+    // Per payment: 10 tokens, fee = 0.05, net = 9.95
+    // 3 payments: merchant = 29.85 = 298500000, fee_collector = 0.15 = 1500000
+    assert_eq!(token_client.balance(&merchant), 298500000);
+    assert_eq!(token_client.balance(&fee_collector), 1500000);
+
+    // Verify subscriber balance decreased by 30 tokens
+    assert_eq!(
+        token_client.balance(&subscriber),
+        1_000_0000000 - 30_0000000
+    );
+}
+
+#[test]
+fn test_cancel_then_resubscribe() {
+    let (env, admin, merchant, subscriber, fee_collector) = create_test_env();
+    let contract_id = env.register_contract(None, SubscriptionContract);
+    let client = SubscriptionContractClient::new(&env, &contract_id);
+    let (token_address, token_client, token_admin_client) = setup_token(&env, &admin);
+
+    client.initialize(&admin, &50, &fee_collector);
+
+    let plan_name = String::from_str(&env, "Pro Monthly");
+    let plan_id = client.create_plan(
+        &merchant,
+        &token_address,
+        &10_0000000,
+        &86400,
+        &plan_name,
+    );
+
+    token_admin_client.mint(&subscriber, &1_000_0000000);
+    token_client.approve(&subscriber, &contract_id, &500_0000000, &1_000_000);
+
+    // Subscribe
+    let sub_id_1 = client.subscribe(&subscriber, &plan_id, &15_0000000);
+    assert_eq!(client.get_plan(&plan_id).subscriber_count, 1);
+
+    // Cancel
+    client.cancel(&subscriber, &sub_id_1);
+    assert_eq!(client.get_subscription(&sub_id_1).status, SubscriptionStatus::Cancelled);
+    assert_eq!(client.get_plan(&plan_id).subscriber_count, 0);
+
+    // Resubscribe (new subscription)
+    let sub_id_2 = client.subscribe(&subscriber, &plan_id, &20_0000000);
+    assert!(sub_id_2 > sub_id_1); // New subscription ID
+    assert_eq!(client.get_subscription(&sub_id_2).status, SubscriptionStatus::Active);
+    assert_eq!(client.get_plan(&plan_id).subscriber_count, 1);
+
+    // User should now have 2 subscription IDs in their list
+    let user_subs = client.get_user_subscriptions(&subscriber);
+    assert_eq!(user_subs.len(), 2);
+
+    // Execute payment on new subscription
+    env.ledger().with_mut(|li| {
+        li.timestamp += 86400;
+    });
+    let result = client.execute_payment(&sub_id_2);
+    assert_eq!(result, true);
+
+    // Old subscription should still be cancelled
+    assert_eq!(client.get_subscription(&sub_id_1).status, SubscriptionStatus::Cancelled);
+}

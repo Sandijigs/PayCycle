@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Toaster } from "sonner";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ConnectButton from "@/components/wallet/ConnectButton";
@@ -47,6 +48,12 @@ export default function RootLayout({
                   Home
                 </Link>
                 <Link
+                  href="/dashboard"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <Link
                   href="/plans"
                   className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
@@ -89,6 +96,8 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
+
+          <Toaster richColors position="bottom-right" />
         </Providers>
       </body>
     </html>

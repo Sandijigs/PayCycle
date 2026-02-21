@@ -1,53 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useWallet } from "@/hooks/useWallet";
-import { useSubscription } from "@/hooks/useSubscription";
-import type { PlanData } from "@/types/subscription";
+import { useMerchantPlans } from "@/hooks/useContractQueries";
 import CreatePlanForm from "@/components/subscription/CreatePlanForm";
 import PlanCard from "@/components/subscription/PlanCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, Wallet, LayoutGrid } from "lucide-react";
+import { Plus, Wallet, LayoutGrid } from "lucide-react";
+
+function PlanCardSkeleton() {
+  return (
+    <Card className="rounded-2xl border-border/50">
+      <CardContent className="pt-6 space-y-4">
+        <div className="flex justify-between">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-5 w-16" />
+        </div>
+        <Skeleton className="h-9 w-40" />
+        <div className="flex gap-4">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function PlansPage() {
   const { address, isConnected } = useWallet();
-  const { getMerchantPlans } = useSubscription();
-
-  const [plans, setPlans] = useState<PlanData[]>([]);
-  const [isLoadingPlans, setIsLoadingPlans] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const { data: plans, isLoading, error, refetch } = useMerchantPlans(address);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // Fetch merchant plans when wallet connects
-  const fetchPlans = async () => {
-    if (!address) return;
-    setIsLoadingPlans(true);
-    setLoadError(null);
-    try {
-      const result = await getMerchantPlans(address);
-      setPlans(result);
-    } catch (err: unknown) {
-      setLoadError(err instanceof Error ? err.message : "Failed to load plans");
-    } finally {
-      setIsLoadingPlans(false);
-    }
-  };
-
-  useEffect(() => {
-    if (address) {
-      fetchPlans();
-    } else {
-      setPlans([]);
-    }
-  }, [address]);
-
-  const handlePlanCreated = (planId: number) => {
+  const handlePlanCreated = () => {
     setShowCreateForm(false);
-    // Refetch plans to include the new one
-    fetchPlans();
+    refetch();
   };
-
-  // ---------- RENDER ----------
 
   // Not connected state
   if (!isConnected) {
@@ -111,27 +100,28 @@ export default function PlansPage() {
         </Button>
       </div>
 
-      {/* Loading state */}
-      {isLoadingPlans && (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-          <p className="text-muted-foreground">Loading your plans...</p>
+      {/* Loading state - skeleton cards */}
+      {isLoading && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <PlanCardSkeleton />
+          <PlanCardSkeleton />
+          <PlanCardSkeleton />
         </div>
       )}
 
       {/* Error state */}
-      {loadError && !isLoadingPlans && (
+      {error && !isLoading && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-destructive font-medium mb-2">Failed to load plans</p>
-          <p className="text-sm text-muted-foreground mb-4">{loadError}</p>
-          <Button variant="outline" onClick={fetchPlans}>
+          <p className="text-sm text-muted-foreground mb-4">{error.message}</p>
+          <Button variant="outline" onClick={() => refetch()}>
             Try Again
           </Button>
         </div>
       )}
 
       {/* Empty state */}
-      {!isLoadingPlans && !loadError && plans.length === 0 && (
+      {!isLoading && !error && plans && plans.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
             <LayoutGrid className="h-7 w-7 text-primary" />
@@ -151,17 +141,10 @@ export default function PlansPage() {
       )}
 
       {/* Plan grid */}
-      {!isLoadingPlans && !loadError && plans.length > 0 && (
+      {!isLoading && !error && plans && plans.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              onClick={() => {
-                // Future: navigate to plan detail or expand inline
-                console.log("Plan clicked:", plan.id);
-              }}
-            />
+            <PlanCard key={plan.id} plan={plan} />
           ))}
         </div>
       )}

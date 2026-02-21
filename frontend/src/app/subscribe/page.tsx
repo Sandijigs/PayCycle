@@ -1,103 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useWallet } from "@/hooks/useWallet";
-import { useSubscription } from "@/hooks/useSubscription";
-import type { PlanData, SubscriptionData } from "@/types/subscription";
+import { useUserSubscriptions, useAllActivePlans } from "@/hooks/useContractQueries";
 import SubscriptionCard from "@/components/subscription/SubscriptionCard";
 import PlanCard from "@/components/subscription/PlanCard";
 import SubscribeFlow from "@/components/subscription/SubscribeFlow";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wallet, Grid3x3, List } from "lucide-react";
+import { Wallet, Grid3x3, List } from "lucide-react";
+import type { PlanData } from "@/types/subscription";
+
+function ContentCardSkeleton() {
+  return (
+    <Card className="rounded-2xl border-border/50">
+      <CardContent className="pt-6 space-y-4">
+        <div className="flex justify-between">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-5 w-16" />
+        </div>
+        <Skeleton className="h-9 w-40" />
+        <div className="flex gap-4">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function SubscribePage() {
   const { address, isConnected } = useWallet();
-  const {
-    getSubscription,
-    getUserSubscriptions,
-    getPlan,
-    getPlanCount,
-  } = useSubscription();
-
   const [activeTab, setActiveTab] = useState<"my" | "browse">("my");
-  const [mySubscriptions, setMySubscriptions] = useState<
-    Array<{ subscription: SubscriptionData; plan: PlanData }>
-  >([]);
-  const [allPlans, setAllPlans] = useState<PlanData[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<PlanData | null>(null);
 
-  const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(false);
-  const [subscriptionsError, setSubscriptionsError] = useState<string | null>(null);
+  const {
+    data: mySubscriptions,
+    isLoading: isLoadingSubscriptions,
+    error: subscriptionsError,
+    refetch: refetchSubscriptions,
+  } = useUserSubscriptions(activeTab === "my" ? address : null);
 
-  const [isLoadingPlans, setIsLoadingPlans] = useState(false);
-  const [plansError, setPlansError] = useState<string | null>(null);
-
-  // Fetch user subscriptions
-  const fetchUserSubscriptions = async () => {
-    if (!address) return;
-
-    setIsLoadingSubscriptions(true);
-    setSubscriptionsError(null);
-    try {
-      const subIds = await getUserSubscriptions(address);
-
-      const enrichedSubs = await Promise.all(
-        subIds.map(async (id) => {
-          const subscription = await getSubscription(id);
-          const plan = await getPlan(subscription.planId);
-          return { subscription, plan };
-        })
-      );
-
-      setMySubscriptions(enrichedSubs);
-    } catch (err: unknown) {
-      setSubscriptionsError(err instanceof Error ? err.message : "Failed to load subscriptions");
-    } finally {
-      setIsLoadingSubscriptions(false);
-    }
-  };
-
-  // Fetch all active plans
-  const fetchAllPlans = async () => {
-    setIsLoadingPlans(true);
-    setPlansError(null);
-    try {
-      const count = await getPlanCount();
-      const plans: PlanData[] = [];
-
-      for (let i = 1; i <= count; i++) {
-        try {
-          const plan = await getPlan(i);
-          if (plan.status === "Active") {
-            plans.push(plan);
-          }
-        } catch {
-          continue;
-        }
-      }
-
-      setAllPlans(plans);
-    } catch (err: unknown) {
-      setPlansError(err instanceof Error ? err.message : "Failed to load plans");
-    } finally {
-      setIsLoadingPlans(false);
-    }
-  };
-
-  // Fetch data based on active tab
-  useEffect(() => {
-    if (!isConnected) {
-      setMySubscriptions([]);
-      setAllPlans([]);
-      return;
-    }
-
-    if (activeTab === "my") {
-      fetchUserSubscriptions();
-    } else if (activeTab === "browse") {
-      fetchAllPlans();
-    }
-  }, [activeTab, isConnected, address]);
+  const {
+    data: allPlans,
+    isLoading: isLoadingPlans,
+    error: plansError,
+    refetch: refetchPlans,
+  } = useAllActivePlans();
 
   // Wallet not connected state
   if (!isConnected) {
@@ -123,7 +73,7 @@ export default function SubscribePage() {
           onSuccess={() => {
             setSelectedPlan(null);
             setActiveTab("my");
-            fetchUserSubscriptions();
+            refetchSubscriptions();
           }}
           onCancel={() => setSelectedPlan(null)}
         />
@@ -183,9 +133,10 @@ export default function SubscribePage() {
         <>
           {/* Loading state */}
           {isLoadingSubscriptions && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-              <p className="text-muted-foreground">Loading your subscriptions...</p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ContentCardSkeleton />
+              <ContentCardSkeleton />
+              <ContentCardSkeleton />
             </div>
           )}
 
@@ -193,15 +144,15 @@ export default function SubscribePage() {
           {subscriptionsError && !isLoadingSubscriptions && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <p className="text-destructive font-medium mb-2">Failed to load subscriptions</p>
-              <p className="text-sm text-muted-foreground mb-4">{subscriptionsError}</p>
-              <Button variant="outline" onClick={fetchUserSubscriptions}>
+              <p className="text-sm text-muted-foreground mb-4">{subscriptionsError.message}</p>
+              <Button variant="outline" onClick={() => refetchSubscriptions()}>
                 Try Again
               </Button>
             </div>
           )}
 
           {/* Empty state */}
-          {!isLoadingSubscriptions && !subscriptionsError && mySubscriptions.length === 0 && (
+          {!isLoadingSubscriptions && !subscriptionsError && mySubscriptions && mySubscriptions.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
                 <List className="h-7 w-7 text-primary" />
@@ -220,14 +171,14 @@ export default function SubscribePage() {
           )}
 
           {/* Subscriptions list */}
-          {!isLoadingSubscriptions && !subscriptionsError && mySubscriptions.length > 0 && (
+          {!isLoadingSubscriptions && !subscriptionsError && mySubscriptions && mySubscriptions.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {mySubscriptions.map(({ subscription, plan }) => (
                 <SubscriptionCard
                   key={subscription.id}
                   subscription={subscription}
                   plan={plan}
-                  onActionComplete={fetchUserSubscriptions}
+                  onActionComplete={() => refetchSubscriptions()}
                 />
               ))}
             </div>
@@ -240,9 +191,10 @@ export default function SubscribePage() {
         <>
           {/* Loading state */}
           {isLoadingPlans && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-              <p className="text-muted-foreground">Loading available plans...</p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ContentCardSkeleton />
+              <ContentCardSkeleton />
+              <ContentCardSkeleton />
             </div>
           )}
 
@@ -250,15 +202,15 @@ export default function SubscribePage() {
           {plansError && !isLoadingPlans && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <p className="text-destructive font-medium mb-2">Failed to load plans</p>
-              <p className="text-sm text-muted-foreground mb-4">{plansError}</p>
-              <Button variant="outline" onClick={fetchAllPlans}>
+              <p className="text-sm text-muted-foreground mb-4">{plansError.message}</p>
+              <Button variant="outline" onClick={() => refetchPlans()}>
                 Try Again
               </Button>
             </div>
           )}
 
           {/* Empty state */}
-          {!isLoadingPlans && !plansError && allPlans.length === 0 && (
+          {!isLoadingPlans && !plansError && allPlans && allPlans.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
                 <Grid3x3 className="h-7 w-7 text-primary" />
@@ -271,10 +223,10 @@ export default function SubscribePage() {
           )}
 
           {/* Plans grid */}
-          {!isLoadingPlans && !plansError && allPlans.length > 0 && (
+          {!isLoadingPlans && !plansError && allPlans && allPlans.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {allPlans.map((plan) => (
-                <div key={plan.merchant + plan.createdAt} onClick={() => setSelectedPlan(plan)}>
+                <div key={plan.id} onClick={() => setSelectedPlan(plan)} className="cursor-pointer">
                   <PlanCard plan={plan} />
                 </div>
               ))}
