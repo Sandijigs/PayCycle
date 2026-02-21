@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSubscription } from "@/hooks/useSubscription";
+import { useCancelMutation, usePauseMutation, useResumeMutation } from "@/hooks/useContractQueries";
 import type { SubscriptionData, PlanData } from "@/types/subscription";
 import { TOKENS } from "@/lib/contracts";
 import { INTERVAL_LABELS, INTERVALS, type IntervalKey } from "@/types/subscription";
@@ -21,8 +21,12 @@ export default function SubscriptionCard({
   plan,
   onActionComplete,
 }: SubscriptionCardProps) {
-  const { cancel, pause, resume, isLoading, txStatus } = useSubscription();
+  const cancelMutation = useCancelMutation();
+  const pauseMutation = usePauseMutation();
+  const resumeMutation = useResumeMutation();
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+
+  const isLoading = cancelMutation.isPending || pauseMutation.isPending || resumeMutation.isPending;
 
   // Resolve token info
   const tokenInfo = Object.values(TOKENS).find((t) => t.address === plan.token);
@@ -67,32 +71,25 @@ export default function SubscriptionCard({
       : "destructive";
 
   // Handle actions
-  const handlePause = async () => {
-    try {
-      await pause(subscription.id);
-      onActionComplete();
-    } catch (err) {
-      console.error("Failed to pause:", err);
-    }
+  const handlePause = () => {
+    pauseMutation.mutate(subscription.id, {
+      onSuccess: () => onActionComplete(),
+    });
   };
 
-  const handleResume = async () => {
-    try {
-      await resume(subscription.id);
-      onActionComplete();
-    } catch (err) {
-      console.error("Failed to resume:", err);
-    }
+  const handleResume = () => {
+    resumeMutation.mutate(subscription.id, {
+      onSuccess: () => onActionComplete(),
+    });
   };
 
-  const handleCancelConfirm = async () => {
-    try {
-      await cancel(subscription.id);
-      setConfirmingCancel(false);
-      onActionComplete();
-    } catch (err) {
-      console.error("Failed to cancel:", err);
-    }
+  const handleCancelConfirm = () => {
+    cancelMutation.mutate(subscription.id, {
+      onSuccess: () => {
+        setConfirmingCancel(false);
+        onActionComplete();
+      },
+    });
   };
 
   // Cancel confirmation view
@@ -127,7 +124,7 @@ export default function SubscriptionCard({
             disabled={isLoading}
             className="flex-1"
           >
-            {isLoading ? (
+            {cancelMutation.isPending ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Cancelling...
@@ -217,7 +214,7 @@ export default function SubscriptionCard({
               disabled={isLoading}
               className="flex-1"
             >
-              {isLoading && txStatus === "submitting" ? (
+              {pauseMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : null}
               Pause
@@ -239,7 +236,7 @@ export default function SubscriptionCard({
               disabled={isLoading}
               className="flex-1 gradient-brand text-white"
             >
-              {isLoading && txStatus === "submitting" ? (
+              {resumeMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : null}
               Resume
