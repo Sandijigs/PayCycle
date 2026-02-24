@@ -22,9 +22,17 @@ export function useMerchantPlans(address: string | null) {
 
   return useQuery({
     queryKey: queryKeys.merchantPlans(address || ""),
-    queryFn: () => getMerchantPlans(address!),
+    queryFn: async () => {
+      try {
+        return await getMerchantPlans(address!);
+      } catch {
+        // Contract may not be initialized yet — return empty
+        return [] as PlanData[];
+      }
+    },
     enabled: !!address,
     staleTime: 30_000,
+    retry: false,
   });
 }
 
@@ -34,21 +42,26 @@ export function useAllActivePlans() {
   return useQuery({
     queryKey: queryKeys.allPlans,
     queryFn: async (): Promise<PlanData[]> => {
-      const count = await getPlanCount();
-      const plans: PlanData[] = [];
-      for (let i = 1; i <= count; i++) {
-        try {
-          const plan = await getPlan(i);
-          if (plan.status === "Active") {
-            plans.push(plan);
+      try {
+        const count = await getPlanCount();
+        const plans: PlanData[] = [];
+        for (let i = 1; i <= count; i++) {
+          try {
+            const plan = await getPlan(i);
+            if (plan.status === "Active") {
+              plans.push(plan);
+            }
+          } catch {
+            continue;
           }
-        } catch {
-          continue;
         }
+        return plans;
+      } catch {
+        return [];
       }
-      return plans;
     },
     staleTime: 30_000,
+    retry: false,
   });
 }
 
@@ -58,17 +71,27 @@ export function useUserSubscriptions(address: string | null) {
   return useQuery({
     queryKey: queryKeys.userSubscriptions(address || ""),
     queryFn: async (): Promise<Array<{ subscription: SubscriptionData; plan: PlanData }>> => {
-      const subIds = await getUserSubscriptions(address!);
-      return Promise.all(
-        subIds.map(async (id) => {
-          const subscription = await getSubscription(id);
-          const plan = await getPlan(subscription.planId);
-          return { subscription, plan };
-        })
-      );
+      try {
+        const subIds = await getUserSubscriptions(address!);
+        const results = await Promise.all(
+          subIds.map(async (id) => {
+            try {
+              const subscription = await getSubscription(id);
+              const plan = await getPlan(subscription.planId);
+              return { subscription, plan };
+            } catch {
+              return null;
+            }
+          })
+        );
+        return results.filter((r): r is { subscription: SubscriptionData; plan: PlanData } => r !== null);
+      } catch {
+        return [];
+      }
     },
     enabled: !!address,
     staleTime: 15_000,
+    retry: false,
   });
 }
 

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import ConnectButton from "@/components/wallet/ConnectButton";
+import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   title: "PayCycle — Recurring Payments on Stellar",
@@ -26,20 +28,22 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 glass">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                  </svg>
-                </div>
-                <span className="text-xl font-bold tracking-tight gradient-text">
-                  PayCycle
-                </span>
+                <Link href="/" className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                    </svg>
+                  </div>
+                  <span className="text-xl font-bold tracking-tight gradient-text">
+                    PayCycle
+                  </span>
+                </Link>
                 <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-accent/10 text-accent">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                   Testnet
                 </span>
               </div>
-              {/* Navigation links */}
+              {/* Desktop navigation */}
               <div className="hidden sm:flex items-center gap-1">
                 <Link
                   href="/"
@@ -66,12 +70,15 @@ export default function RootLayout({
                   Subscribe
                 </Link>
               </div>
-              <ConnectButton />
+              <div className="flex items-center gap-2">
+                <ConnectButton />
+                <MobileNav />
+              </div>
             </nav>
           </header>
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {children}
+            <ErrorBoundary>{children}</ErrorBoundary>
           </main>
 
           <footer className="mt-auto border-t border-border/50">
@@ -84,10 +91,19 @@ export default function RootLayout({
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <span>Built on Soroban</span>
                   <span className="text-border">|</span>
-                  <span>Powered by Stellar</span>
+                  <a
+                    href="https://stellar.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary transition-colors"
+                  >
+                    Powered by Stellar
+                  </a>
                   <span className="text-border">|</span>
                   <a
-                    href="https://github.com/YOUR_USERNAME/paycycle"
+                    href="https://github.com/Sandijigs/PayCycle"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-primary transition-colors"
                   >
                     GitHub
