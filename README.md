@@ -14,9 +14,29 @@ User retains full custody until exact payment moment
 Cancel anytime with one click
 ```
 
+<img width="1635" height="968" alt="PayCycle Dashboard" src="https://github.com/user-attachments/assets/45425578-f6cb-46bc-9626-26c70dc85de7" />
 
+---
 
-<img width="1635" height="968" alt="Screenshot 2026-02-08 at 1 29 05 am" src="https://github.com/user-attachments/assets/45425578-f6cb-46bc-9626-26c70dc85de7" />
+## Live Demo & Media
+
+| Resource | Link |
+|----------|------|
+| **Live Demo** | [frontend-seven-alpha-99.vercel.app](https://frontend-seven-alpha-99.vercel.app) |
+| **Demo Video (1 min)** | [YouTube — PayCycle Demo](YOUR_YOUTUBE_LINK_HERE) |
+| **Contract on Testnet** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
+
+### Test Output (3+ tests passing)
+
+**Contract Tests (12 passing):**
+
+<!-- ADD YOUR CONTRACT TEST SCREENSHOT HERE -->
+<!-- Example: ![Contract Tests](./docs/contract-tests.png) -->
+
+**Frontend Tests (26 passing):**
+
+<!-- ADD YOUR FRONTEND TEST SCREENSHOT HERE -->
+<!-- Example: ![Frontend Tests](./docs/frontend-tests.png) -->
 
 ---
 
@@ -35,51 +55,62 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 
 ---
 
-## Features (Current Release)
+## Features
 
-This release implements the foundational wallet integration and transaction layer:
+### Smart Contract (Soroban/Rust)
 
-| Feature              | Status | Description                                               |
-| -------------------- | ------ | --------------------------------------------------------- |
-| Wallet Connection    | Done   | Connect/disconnect Freighter wallet on Stellar Testnet    |
-| Balance Display      | Done   | Real-time XLM balance with auto-refresh (30s interval)    |
-| Testnet Funding      | Done   | One-click Friendbot funding for unfunded accounts         |
-| Send XLM             | Done   | Transfer XLM to any Stellar address with full validation  |
-| Transaction Feedback | Done   | Real-time signing/submitting/success/error states         |
-| Transaction Explorer | Done   | Direct link to Stellar Expert for submitted transactions  |
-| Account Creation     | Done   | Auto-detect unfunded destinations and use `createAccount` |
+| Feature | Description |
+|---------|-------------|
+| Plan Management | Merchants create subscription plans with token, amount, and interval |
+| Subscribe | Users subscribe with a spending cap (pre-authorized debit) |
+| Execute Payment | Automated recurring payments with `transfer_from` pattern |
+| Pause/Resume | Subscribers can pause and resume subscriptions |
+| Cancel | One-click cancellation with immediate effect |
+| Fee Collection | 0.5% protocol fee on each payment |
+| Initialization | Admin-controlled setup with configurable fee collector |
+
+### Frontend (Next.js)
+
+| Feature | Description |
+|---------|-------------|
+| Wallet Connection | Multi-wallet support via StellarWalletsKit (Freighter, xBull, Lobstr) |
+| Dashboard | Role-based tabs (Merchant / Subscriber) with stat cards |
+| Plan Creation | 3-step wizard for creating subscription plans |
+| Subscribe Flow | Browse plans, subscribe with spending cap approval |
+| Subscription Management | Pause, resume, cancel subscriptions with confirmation |
+| Skeleton Loading | Animated skeleton states while data loads |
+| React Query Caching | Plans cached 30s, subscriptions 15s, auto-invalidated on mutations |
+| Toast Notifications | Success/error feedback on all actions via sonner |
+| Error Boundary | Graceful crash recovery with "Try Again" |
+| Mobile Responsive | Hamburger navigation for small screens |
+| Vercel Deployment | Production-ready with environment variable configuration |
 
 ### Transaction Flow
 
 ```
-[User enters destination + amount]
+[Merchant creates plan] → name, token, amount, interval
         |
-[Validation: address format, balance, minimum reserve]
+[Subscriber subscribes] → approves spending cap
         |
-[Check if destination exists on network]
-        |-- exists --> Operation.payment()
-        |-- new -----> Operation.createAccount()
+[Payment execution] → transfer_from subscriber → merchant (net) + fee_collector (0.5%)
         |
-[Sign via Freighter wallet]
-        |
-[Submit to Stellar Testnet]
-        |
-[Display result + Stellar Expert link]
+[Subscriber manages] → pause / resume / cancel anytime
 ```
 
 ---
 
 ## Tech Stack
 
-| Layer                  | Technology                                                  |
-| ---------------------- | ----------------------------------------------------------- |
-| **Frontend**           | Next.js 14 (App Router), TypeScript, TailwindCSS            |
-| **UI Components**      | shadcn/ui (Badge, Button, Card, Input)                      |
-| **Wallet Integration** | StellarWalletsKit v1.x (Freighter)                          |
-| **Stellar SDK**        | @stellar/stellar-sdk v12                                    |
-| **State Management**   | React Query v5 (server state), React Context (wallet state) |
-| **Smart Contracts**    | Rust + Soroban SDK (upcoming belts)                         |
-| **Deployment**         | Vercel (frontend), Stellar Testnet                          |
+| Layer | Technology |
+|-------|-----------|
+| **Smart Contracts** | Rust, Soroban SDK v21.7.7 |
+| **Frontend** | Next.js 14 (App Router), TypeScript, TailwindCSS |
+| **Wallet Integration** | StellarWalletsKit v1.9.5 (Freighter, xBull, Lobstr) |
+| **Stellar SDK** | @stellar/stellar-sdk v14.5.0 |
+| **State Management** | React Query v5 (server state), React Context (wallet state) |
+| **Notifications** | Sonner (toast notifications) |
+| **Testing** | Vitest + @testing-library/react (frontend), `cargo test` (contract) |
+| **Deployment** | Vercel (frontend), Stellar Testnet (contract) |
 
 ---
 
@@ -87,37 +118,44 @@ This release implements the foundational wallet integration and transaction laye
 
 ```
 paycycle/
-├── frontend/                          # Next.js application
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── layout.tsx             # Root layout with header, footer, providers
-│   │   │   ├── page.tsx               # Landing page with wallet + transaction cards
-│   │   │   └── globals.css            # Brand design system (gradients, glass, glows)
-│   │   ├── components/
-│   │   │   ├── wallet/
-│   │   │   │   ├── WalletProvider.tsx  # StellarWalletsKit context provider
-│   │   │   │   ├── ConnectButton.tsx   # Wallet connect/disconnect button
-│   │   │   │   └── BalanceDisplay.tsx  # Balance card with Friendbot + address info
-│   │   │   ├── transaction/
-│   │   │   │   ├── SendXLM.tsx         # XLM transfer form with full validation
-│   │   │   │   └── TxStatus.tsx        # Transaction status feedback component
-│   │   │   ├── ui/                     # shadcn/ui primitives (badge, button, card, input)
-│   │   │   └── Providers.tsx           # Client-side providers wrapper
-│   │   ├── hooks/
-│   │   │   ├── useWallet.ts            # Wallet context consumer hook
-│   │   │   └── useBalance.ts           # Balance fetching with React Query
-│   │   └── lib/
-│   │       └── utils.ts                # Utility functions (cn class merger)
-│   ├── tailwind.config.ts              # Tailwind + CSS variable mappings
-│   └── package.json
-├── contracts/                          # Soroban smart contracts (future belts)
-│   ├── subscription/                   # Core recurring payments protocol
-│   ├── token/                          # PLC reward token
-│   └── keeper/                         # Payment execution engine
-├── sdk/                                # TypeScript SDK (future)
-├── backend/                            # API server (future)
-├── docs/                               # Documentation
-└── LICENSE                             # MIT
+├── contracts/
+│   └── subscription/
+│       └── src/
+│           ├── lib.rs           # Contract implementation (create_plan, subscribe, execute_payment, etc.)
+│           ├── types.rs         # PlanData, SubscriptionData, PlanStatus, SubscriptionStatus
+│           ├── errors.rs        # PayCycleError enum (12 error variants)
+│           ├── events.rs        # Contract event definitions
+│           └── test.rs          # 12 contract tests
+├── frontend/
+│   └── src/
+│       ├── app/
+│       │   ├── layout.tsx       # Root layout with nav, error boundary, toaster
+│       │   ├── page.tsx         # Landing page
+│       │   ├── dashboard/       # Dashboard with merchant/subscriber tabs
+│       │   ├── plans/           # Plan creation and management
+│       │   └── subscribe/       # Browse plans, manage subscriptions
+│       ├── components/
+│       │   ├── wallet/          # WalletProvider, ConnectButton
+│       │   ├── subscription/    # CreatePlanForm, SubscribeFlow, SubscriptionCard
+│       │   ├── transaction/     # TxStatus
+│       │   ├── ui/              # Reusable UI primitives (button, card, skeleton, etc.)
+│       │   ├── ErrorBoundary.tsx
+│       │   └── MobileNav.tsx
+│       ├── hooks/
+│       │   ├── useSubscription.ts     # Core Soroban contract interaction hook
+│       │   ├── useContractQueries.ts  # React Query wrapper hooks + mutations
+│       │   ├── useWallet.ts           # Wallet context consumer
+│       │   ├── useBalance.ts          # Balance fetching with React Query
+│       │   └── useTokenApproval.ts    # Token approval for recurring debits
+│       ├── lib/
+│       │   ├── contracts.ts     # Contract addresses and token config
+│       │   └── stellar.ts       # Network configuration
+│       ├── types/
+│       │   └── subscription.ts  # TypeScript types, intervals, error parsing
+│       └── __tests__/
+│           └── components.test.tsx  # 26 frontend component tests
+├── .github/workflows/ci.yml    # CI pipeline (contract + frontend tests)
+└── README.md
 ```
 
 ---
@@ -126,8 +164,10 @@ paycycle/
 
 ### Prerequisites
 
-- **Node.js** >= 18.x
-- **npm** >= 9.x
+- **Node.js** >= 22.x
+- **npm** >= 11.x
+- **Rust** + `wasm32-unknown-unknown` target (for contract development)
+- **Stellar CLI** (`stellar`) for contract deployment
 - **Freighter Wallet** — [Install the browser extension](https://www.freighter.app/)
 
 ### Installation
@@ -142,7 +182,8 @@ cd frontend
 npm install
 
 # Create environment file
-cp .env.local.example .env.local
+cp .env.example .env.local
+# Edit .env.local with your contract ID
 
 # Start development server
 npm run dev
@@ -155,9 +196,50 @@ The app will be available at `http://localhost:3000`.
 Create a `.env.local` file in the `frontend/` directory:
 
 ```env
+NEXT_PUBLIC_STELLAR_NETWORK=testnet
+NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
 NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
-NEXT_PUBLIC_FRIENDBOT_URL=https://friendbot.stellar.org
+NEXT_PUBLIC_SUBSCRIPTION_CONTRACT_ID=<your-deployed-contract-id>
+```
+
+### Contract Development
+
+```bash
+# Build the contract
+cd contracts/subscription
+stellar contract build
+
+# Run contract tests
+cargo test
+
+# Deploy to testnet
+stellar contract deploy \
+  --wasm target/wasm32v1-none/release/pay_cycle_subscription.wasm \
+  --source <your-identity> \
+  --network testnet
+
+# Initialize the contract
+stellar contract invoke \
+  --id <contract-id> \
+  --source <your-identity> \
+  --network testnet \
+  -- initialize \
+  --admin <admin-address> \
+  --fee_bps 50 \
+  --fee_collector <fee-collector-address>
+```
+
+### Running Tests
+
+```bash
+# Frontend tests (26 tests)
+cd frontend
+npx vitest run
+
+# Contract tests (12 tests)
+cd contracts/subscription
+cargo test
 ```
 
 ### Freighter Setup
@@ -166,94 +248,79 @@ NEXT_PUBLIC_FRIENDBOT_URL=https://friendbot.stellar.org
 2. Create or import a Stellar wallet
 3. **Switch to Test Net** — Open Freighter > Settings > Network > Select "Test Net"
 4. Connect your wallet through the PayCycle interface
-5. Fund your testnet account using the built-in Friendbot button
+5. Fund your testnet account using Friendbot
 
 ---
 
 ## Architecture
 
-### Wallet Integration
+### Smart Contract Design
 
-PayCycle uses **StellarWalletsKit** as the wallet abstraction layer, currently configured with the Freighter module. The wallet state is managed through React Context (`WalletProvider`), making it accessible throughout the component tree.
+The subscription contract uses **instance storage** with composite keys for efficient data organization:
 
 ```
-WalletProvider (React Context)
+Storage Keys:
+  "admin"           → Address (protocol admin)
+  "fee_bps"         → u32 (fee in basis points, e.g. 50 = 0.5%)
+  "fee_col"         → Address (fee collector)
+  "plan_cnt"        → u64 (total plan count)
+  "sub_cnt"         → u64 (total subscription count)
+  ("plan", id)      → PlanData
+  ("sub", id)       → SubscriptionData
+  ("user_subs", addr) → Vec<u64> (user's subscription IDs)
+```
+
+**Payment Flow:**
+```
+execute_payment(subscription_id)
     |
-    ├── StellarWalletsKit instance
-    ├── Connection state (address, isConnected, isConnecting)
-    ├── connect() → opens wallet modal → getAddress()
-    └── disconnect() → clears state
+    ├── Verify subscription is Active
+    ├── Verify payment is due (current_time >= next_payment)
+    ├── Load plan and verify it's Active
+    ├── Check amount <= spending cap
+    ├── Calculate fee (amount * fee_bps / 10000)
+    ├── transfer_from(subscriber → merchant, net_amount)
+    ├── transfer_from(subscriber → fee_collector, fee_amount)
+    └── Update next_payment = current_time + interval
 ```
 
-**Key design decisions:**
+### Frontend Architecture
 
-- **Providers pattern** — `Providers.tsx` wraps both `QueryClientProvider` and `WalletProvider` as a client component, while `layout.tsx` remains a server component for SEO and performance.
-- **Auto-reconnect** — On page load, the provider checks if the wallet was previously connected and silently restores the session.
-- **Kit exposure** — The `kit` instance is exposed through context so components like `SendXLM` can directly call `kit.signTransaction()`.
-
-### Balance Fetching
-
-Balance data is fetched from the Stellar Horizon API and cached with React Query:
-
-- **Stale time:** 10 seconds (prevents redundant requests)
-- **Auto-refetch:** Every 30 seconds (keeps balance current)
-- **Manual refetch:** Available via the refresh button on the balance card
-- **404 handling:** Unfunded accounts return "0" balance instead of throwing errors
-
-### Transaction Handling
-
-The `SendXLM` component handles the full transaction lifecycle:
-
-1. **Input validation** — Stellar address format (Ed25519 public key), amount > 0, sufficient balance (reserves 1 XLM for fees + minimum balance)
-2. **Destination check** — Loads the destination account from Horizon to determine if it exists
-3. **Operation selection** — Uses `Operation.payment()` for existing accounts, `Operation.createAccount()` for unfunded destinations
-4. **Signing** — Delegates to Freighter via `kit.signTransaction(xdr, { networkPassphrase })`
-5. **Submission** — Submits the signed XDR to the Horizon server
-6. **Feedback** — Displays real-time status (signing → submitting → success/error) with a link to Stellar Expert
-
-### Design System
-
-The UI uses a custom brand design system built on CSS custom properties and Tailwind:
-
-- **Primary:** Purple (#7C3AED) — used for CTAs, gradients, and brand elements
-- **Accent:** Teal (#0D9488) — used for status indicators and secondary highlights
-- **Gradient brand:** 3-stop gradient (purple → blue → teal) for headers and buttons
-- **Glass morphism:** Semi-transparent backgrounds with backdrop blur for the sticky header
-- **Dark mode ready:** Full set of dark theme CSS variables defined
+```
+Providers (QueryClient + Wallet)
+    |
+    ├── useSubscription()           # Low-level contract calls (invoke/query)
+    ├── useContractQueries()        # React Query wrappers with caching
+    │   ├── useMerchantPlans()      # staleTime: 30s
+    │   ├── useAllActivePlans()     # staleTime: 30s
+    │   ├── useUserSubscriptions()  # staleTime: 15s
+    │   └── Mutations (auto-invalidate on success)
+    └── Pages consume hooks directly
+```
 
 ---
 
 ## Security Considerations
 
-- **Self-custodial** — No private keys are ever stored or transmitted. All signing happens in the Freighter wallet extension.
-- **Input validation** — Destination addresses are validated using `StellarSdk.StrKey.isValidEd25519PublicKey()` before any transaction is built.
-- **Balance guards** — The app reserves 1 XLM for network fees and minimum balance requirements, preventing users from draining their accounts.
-- **Network isolation** — The app is configured for Stellar Testnet with explicit network passphrase verification, preventing accidental mainnet transactions.
-- **No hardcoded secrets** — All network configuration is loaded from environment variables.
+- **Self-custodial** — No private keys are stored or transmitted. All signing happens in the wallet extension.
+- **Spending caps** — Subscribers set a maximum amount per payment, preventing overcharging.
+- **Input validation** — All addresses validated before transaction construction.
+- **Balance guards** — App reserves funds for network fees and minimum balance.
+- **Network isolation** — Configured for Testnet with explicit passphrase verification.
+- **Graceful error handling** — Contract query failures return empty data instead of crashing the UI.
 
 ---
 
 ## Roadmap
 
-PayCycle follows the Stellar Journey to Mastery belt progression:
-
-| Belt            | Focus                                                        | Status  |
-| --------------- | ------------------------------------------------------------ | ------- |
-| **White Belt**  | Wallet integration, XLM transfers, testnet setup             | Current |
-| **Yellow Belt** | Soroban smart contract deployment, subscription contract v1  | Planned |
-| **Orange Belt** | Subscription dashboard, plan management, payment execution   | Planned |
-| **Green Belt**  | PLC token (SEP-41), keeper contract, inter-contract calls    | Planned |
-| **Blue Belt**   | TypeScript SDK, merchant integration API, CI/CD pipeline     | Planned |
-| **Black Belt**  | Mainnet launch, security audit, user acquisition (25+ users) | Planned |
-
-### Upcoming Features
-
-- Subscription plan creation and management
-- Automated recurring payment execution via Soroban
-- PLC governance/reward token
-- Merchant dashboard with analytics
-- TypeScript SDK for third-party dApp integration
-- Multi-wallet support (xBull, Albedo)
+| Belt | Focus | Status |
+|------|-------|--------|
+| **White Belt** | Wallet integration, XLM transfers, testnet setup | Done |
+| **Yellow Belt** | Soroban smart contract, subscription contract v1 | Done |
+| **Orange Belt** | Dashboard, plan management, caching, deployment | Done |
+| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls | Planned |
+| **Blue Belt** | TypeScript SDK, merchant integration API, CI/CD | Planned |
+| **Black Belt** | Mainnet launch, security audit, user acquisition | Planned |
 
 ---
 
@@ -262,14 +329,18 @@ PayCycle follows the Stellar Journey to Mastery belt progression:
 Contributions are welcome. Please open an issue to discuss proposed changes before submitting a pull request.
 
 ```bash
-# Run the development server
+# Development
 cd frontend && npm run dev
 
-# Run tests
-npm run test
+# Tests
+npx vitest run          # Frontend
+cargo test              # Contract
 
-# Lint the codebase
+# Lint
 npm run lint
+
+# Type check
+npx tsc --noEmit
 ```
 
 ---
@@ -280,4 +351,4 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
-Built on [Stellar](https://stellar.org) | Powered by [Soroban](https://soroban.stellar.org)
+Built on [Stellar](https://stellar.org) | Powered by [Soroban](https://soroban.stellar.org) | [GitHub](https://github.com/Sandijigs/PayCycle)
