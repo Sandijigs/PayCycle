@@ -30,13 +30,13 @@ Cancel anytime with one click
 
 **Contract Tests (12 passing):**
 
-<!-- ADD YOUR CONTRACT TEST SCREENSHOT HERE -->
-<!-- Example: ![Contract Tests](./docs/contract-tests.png) -->
+<img width="1011" height="237" alt="Screenshot 2026-02-24 at 11 50 52 am" src="https://github.com/user-attachments/assets/9f6f2e2a-c78d-4324-840a-f511dcd4d697" />
+
 
 **Frontend Tests (26 passing):**
 
-<!-- ADD YOUR FRONTEND TEST SCREENSHOT HERE -->
-<!-- Example: ![Frontend Tests](./docs/frontend-tests.png) -->
+<img width="983" height="175" alt="Screenshot 2026-02-24 at 11 47 56 am" src="https://github.com/user-attachments/assets/979e8ca5-7c86-41fd-a081-3c356daa911a" />
+
 
 ---
 
