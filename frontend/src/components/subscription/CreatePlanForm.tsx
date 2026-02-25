@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
+import { toast } from "sonner";
 import { TOKENS, type TokenSymbol } from "@/lib/contracts";
 import { INTERVALS, INTERVAL_LABELS, type IntervalKey, type CreatePlanParams } from "@/types/subscription";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -58,8 +59,10 @@ export default function CreatePlanForm({ onSuccess, onCancel }: CreatePlanFormPr
       const planId = await createPlan(params);
       // Wait a moment for the success state to show, then callback
       setTimeout(() => onSuccess(planId), 2000);
-    } catch {
-      // Error is already set in the hook state
+    } catch (err: unknown) {
+      // Show toast as fallback in case hook state wasn't updated
+      const msg = err instanceof Error ? err.message : "Failed to create plan";
+      toast.error(msg);
     }
   };
 

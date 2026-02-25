@@ -89,7 +89,10 @@ export function useSubscription() {
   const invokeContract = useCallback(
     async (method: string, ...args: StellarSdk.xdr.ScVal[]) => {
       if (!address || !kit) {
-        throw new Error("Wallet not connected");
+        const msg = "Wallet not connected";
+        setError(msg);
+        setTxStatus("error");
+        throw new Error(msg);
       }
 
       const server = getServer();
