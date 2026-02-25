@@ -23,7 +23,7 @@ Cancel anytime with one click
 | Resource | Link |
 |----------|------|
 | **Live Demo** | [frontend-seven-alpha-99.vercel.app](https://frontend-seven-alpha-99.vercel.app) |
-| **Demo Video (1 min)** | [YouTube — PayCycle Demo](YOUR_YOUTUBE_LINK_HERE) |
+| **Demo Video (1 min)** | [YouTube — PayCycle Demo](https://youtu.be/uOhB9rMPtSM) |
 | **Contract on Testnet** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
 
 ### Test Output (3+ tests passing)
