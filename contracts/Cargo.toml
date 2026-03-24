@@ -2,7 +2,7 @@
 resolver = "2"
 members = [
     "subscription",
-    # "token",    # Uncomment at Green Belt
+    "token",
     # "keeper",   # Uncomment at Green Belt
 ]
 

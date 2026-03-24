@@ -24,11 +24,20 @@ Cancel anytime with one click
 |----------|------|
 | **Live Demo** | [frontend-seven-alpha-99.vercel.app](https://frontend-seven-alpha-99.vercel.app) |
 | **Demo Video (1 min)** | [YouTube — PayCycle Demo](https://youtu.be/uOhB9rMPtSM) |
-| **Contract on Testnet** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
+| **Subscription Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
+| **PLC Token Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB) |
 
-### Test Output (3+ tests passing)
+### Deployed Contracts
 
-**Contract Tests (12 passing):**
+| Contract | Address | Network |
+|----------|---------|---------|
+| Subscription | `CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD` | Testnet |
+| PLC Token (SEP-41) | `CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB` | Testnet |
+| XLM SAC | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | Testnet |
+
+### Test Output
+
+**Contract Tests (25 passing — 12 subscription + 13 token):**
 
 <!-- ADD YOUR CONTRACT TEST SCREENSHOT HERE -->
 <!-- Example: ![Contract Tests](./docs/contract-tests.png) -->
@@ -57,7 +66,9 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 
 ## Features
 
-### Smart Contract (Soroban/Rust)
+### Smart Contracts (Soroban/Rust)
+
+**Subscription Contract:**
 
 | Feature | Description |
 |---------|-------------|
@@ -68,6 +79,16 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | Cancel | One-click cancellation with immediate effect |
 | Fee Collection | 0.5% protocol fee on each payment |
 | Initialization | Admin-controlled setup with configurable fee collector |
+
+**PLC Token Contract (SEP-41):**
+
+| Feature | Description |
+|---------|-------------|
+| SEP-41 Compliant | Full token interface: transfer, approve, transfer_from, burn, burn_from |
+| Metadata | name="PayCycle Token", symbol="PLC", decimals=7 |
+| Admin Minting | Admin-controlled `mint` for reward distribution |
+| Allowance System | Temporary storage with ledger-based expiration |
+| TTL Management | Automatic TTL extension on balance and allowance access |
 
 ### Frontend (Next.js)
 
@@ -119,13 +140,17 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 ```
 paycycle/
 ├── contracts/
-│   └── subscription/
+│   ├── subscription/
+│   │   └── src/
+│   │       ├── lib.rs           # Subscription contract (create_plan, subscribe, execute_payment, etc.)
+│   │       ├── types.rs         # PlanData, SubscriptionData, PlanStatus, SubscriptionStatus
+│   │       ├── errors.rs        # PayCycleError enum (12 error variants)
+│   │       ├── events.rs        # Contract event definitions
+│   │       └── test.rs          # 12 contract tests
+│   └── token/
 │       └── src/
-│           ├── lib.rs           # Contract implementation (create_plan, subscribe, execute_payment, etc.)
-│           ├── types.rs         # PlanData, SubscriptionData, PlanStatus, SubscriptionStatus
-│           ├── errors.rs        # PayCycleError enum (12 error variants)
-│           ├── events.rs        # Contract event definitions
-│           └── test.rs          # 12 contract tests
+│           ├── lib.rs           # PLC token (SEP-41): mint, burn, transfer, approve, metadata
+│           └── test.rs          # 13 token tests
 ├── frontend/
 │   └── src/
 │       ├── app/
@@ -318,7 +343,7 @@ Providers (QueryClient + Wallet)
 | **White Belt** | Wallet integration, XLM transfers, testnet setup | Done |
 | **Yellow Belt** | Soroban smart contract, subscription contract v1 | Done |
 | **Orange Belt** | Dashboard, plan management, caching, deployment | Done |
-| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls | Planned |
+| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls | In Progress |
 | **Blue Belt** | TypeScript SDK, merchant integration API, CI/CD | Planned |
 | **Black Belt** | Mainnet launch, security audit, user acquisition | Planned |
 
