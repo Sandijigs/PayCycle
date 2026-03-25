@@ -1,5 +1,7 @@
 # PayCycle
 
+[![CI](https://github.com/Sandijigs/PayCycle/actions/workflows/ci.yml/badge.svg)](https://github.com/Sandijigs/PayCycle/actions/workflows/ci.yml)
+
 **Programmable Recurring Payments Protocol for Stellar**
 
 PayCycle is a pre-authorized debit protocol built on Soroban smart contracts that brings subscription billing infrastructure to the Stellar ecosystem. Users approve a spending cap once, and payments flow automatically — fully self-custodial, transparent on-chain, and cancellable anytime.
