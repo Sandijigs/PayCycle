@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "subscription",
     "token",
-    # "keeper",   # Uncomment at Green Belt
+    "keeper",
 ]
 
 [workspace.dependencies]

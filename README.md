@@ -26,6 +26,7 @@ Cancel anytime with one click
 | **Demo Video (1 min)** | [YouTube — PayCycle Demo](https://youtu.be/uOhB9rMPtSM) |
 | **Subscription Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
 | **PLC Token Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB) |
+| **Keeper Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYCHDQLVTYJZLMJ5F5MEGKESZMQABWDBDDWMNHJ5CKLHKEMESJX5DTA) |
 
 ### Deployed Contracts
 
@@ -33,11 +34,12 @@ Cancel anytime with one click
 |----------|---------|---------|
 | Subscription | `CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD` | Testnet |
 | PLC Token (SEP-41) | `CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB` | Testnet |
+| Keeper | `CCYCHDQLVTYJZLMJ5F5MEGKESZMQABWDBDDWMNHJ5CKLHKEMESJX5DTA` | Testnet |
 | XLM SAC | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | Testnet |
 
 ### Test Output
 
-**Contract Tests (25 passing — 12 subscription + 13 token):**
+**Contract Tests (29 passing — 12 subscription + 13 token + 4 keeper):**
 
 <!-- ADD YOUR CONTRACT TEST SCREENSHOT HERE -->
 <!-- Example: ![Contract Tests](./docs/contract-tests.png) -->
@@ -89,6 +91,14 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | Admin Minting | Admin-controlled `mint` for reward distribution |
 | Allowance System | Temporary storage with ledger-based expiration |
 | TTL Management | Automatic TTL extension on balance and allowance access |
+
+**Keeper Contract (Inter-Contract Calls):**
+
+| Feature | Description |
+|---------|-------------|
+| Execute & Reward | 5 inter-contract calls: read subscription → read plan → execute payment → mint PLC to subscriber → mint PLC to merchant |
+| Batch Execute | Loop through multiple subscription IDs, atomic all-or-nothing |
+| Reward Config | Configurable PLC reward amounts for subscribers and merchants |
 
 ### Frontend (Next.js)
 
@@ -147,10 +157,14 @@ paycycle/
 │   │       ├── errors.rs        # PayCycleError enum (12 error variants)
 │   │       ├── events.rs        # Contract event definitions
 │   │       └── test.rs          # 12 contract tests
-│   └── token/
+│   ├── token/
+│   │   └── src/
+│   │       ├── lib.rs           # PLC token (SEP-41): mint, burn, transfer, approve, metadata
+│   │       └── test.rs          # 13 token tests
+│   └── keeper/
 │       └── src/
-│           ├── lib.rs           # PLC token (SEP-41): mint, burn, transfer, approve, metadata
-│           └── test.rs          # 13 token tests
+│           ├── lib.rs           # Keeper: execute_and_reward, batch_execute (5 inter-contract calls)
+│           └── test.rs          # 4 keeper integration tests
 ├── frontend/
 │   └── src/
 │       ├── app/
