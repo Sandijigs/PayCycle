@@ -1,7 +1,4 @@
-// Contract addresses — update after deployment
-// TODO: Yellow Belt — Add subscription contract address
-// TODO: Green Belt — Add token + keeper contract addresses
-
+// Contract addresses
 export const CONTRACTS = {
   subscription: (process.env.NEXT_PUBLIC_SUBSCRIPTION_CONTRACT_ID || "").trim(),
   token: (process.env.NEXT_PUBLIC_PLC_TOKEN_CONTRACT_ID || "").trim(),
@@ -10,19 +7,25 @@ export const CONTRACTS = {
 };
 
 /** Well-known token addresses on Stellar Testnet */
-export const TOKENS = {
+export const TOKENS: Record<string, { address: string; symbol: string; name: string; decimals: number }> = {
   XLM: {
     address: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
     symbol: "XLM",
     name: "Stellar Lumens",
     decimals: 7,
   },
+  PLC: {
+    address: (process.env.NEXT_PUBLIC_PLC_TOKEN_CONTRACT_ID || "").trim(),
+    symbol: "PLC",
+    name: "PayCycle Token",
+    decimals: 7,
+  },
   USDC: {
-    address: process.env.NEXT_PUBLIC_USDC_CONTRACT_ID || "",
+    address: (process.env.NEXT_PUBLIC_USDC_CONTRACT_ID || "").trim(),
     symbol: "USDC",
     name: "USD Coin",
     decimals: 7,
   },
-} as const;
+};
 
 export type TokenSymbol = keyof typeof TOKENS;

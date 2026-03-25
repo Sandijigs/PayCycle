@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useWallet } from "@/hooks/useWallet";
+import { useBalance } from "@/hooks/useBalance";
 import { useMerchantPlans, useUserSubscriptions } from "@/hooks/useContractQueries";
 import { TOKENS } from "@/lib/contracts";
 import SubscriptionCard from "@/components/subscription/SubscriptionCard";
 import PlanCard from "@/components/subscription/PlanCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign } from "lucide-react";
+import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins } from "lucide-react";
 
 type RoleTab = "merchant" | "subscriber";
 
@@ -84,13 +85,14 @@ function StatCard({
 
 // ---- Merchant Tab ----
 
-function MerchantTab({ address }: { address: string }) {
+function MerchantTab({ address, plcBalance }: { address: string; plcBalance: string | null }) {
   const { data: plans, isLoading, error } = useMerchantPlans(address);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -126,7 +128,7 @@ function MerchantTab({ address }: { address: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Total Plans"
@@ -143,6 +145,12 @@ function MerchantTab({ address }: { address: string }) {
           label="Monthly Revenue"
           value={`${monthlyRevenue.toFixed(2)} XLM`}
           subtitle="Estimated MRR"
+        />
+        <StatCard
+          icon={Coins}
+          label="PLC Earned"
+          value={plcBalance ? `${parseFloat(plcBalance).toLocaleString()} PLC` : "0 PLC"}
+          subtitle="Reward tokens from payments"
         />
       </div>
 
@@ -168,13 +176,14 @@ function MerchantTab({ address }: { address: string }) {
 
 // ---- Subscriber Tab ----
 
-function SubscriberTab({ address }: { address: string }) {
+function SubscriberTab({ address, plcBalance }: { address: string; plcBalance: string | null }) {
   const { data: enrichedSubs, isLoading, error, refetch } = useUserSubscriptions(address);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -227,7 +236,7 @@ function SubscriberTab({ address }: { address: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Active Subscriptions"
@@ -245,6 +254,12 @@ function SubscriberTab({ address }: { address: string }) {
           label="Monthly Spending"
           value={`${monthlySpending.toFixed(2)} XLM`}
           subtitle="Estimated"
+        />
+        <StatCard
+          icon={Coins}
+          label="PLC Earned"
+          value={plcBalance ? `${parseFloat(plcBalance).toLocaleString()} PLC` : "0 PLC"}
+          subtitle="Reward tokens from payments"
         />
       </div>
 
@@ -277,6 +292,7 @@ function SubscriberTab({ address }: { address: string }) {
 
 export default function DashboardPage() {
   const { address, isConnected } = useWallet();
+  const { plc: plcBalance } = useBalance(address);
   const [activeTab, setActiveTab] = useState<RoleTab>("merchant");
 
   if (!isConnected) {
@@ -341,8 +357,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === "merchant" && <MerchantTab address={address!} />}
-      {activeTab === "subscriber" && <SubscriberTab address={address!} />}
+      {activeTab === "merchant" && <MerchantTab address={address!} plcBalance={plcBalance} />}
+      {activeTab === "subscriber" && <SubscriberTab address={address!} plcBalance={plcBalance} />}
     </div>
   );
 }
