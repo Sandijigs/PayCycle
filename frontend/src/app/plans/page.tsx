@@ -79,13 +79,13 @@ export default function PlansPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center">
+          <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center flex-shrink-0">
             <LayoutGrid className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">My Subscription Plans</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">My Subscription Plans</h1>
             <p className="text-sm text-muted-foreground">
               Manage your recurring payment plans
             </p>
@@ -93,7 +93,7 @@ export default function PlansPage() {
         </div>
         <Button
           onClick={() => setShowCreateForm(true)}
-          className="gradient-brand text-white rounded-xl"
+          className="gradient-brand text-white rounded-xl w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
           Create New Plan

@@ -55,7 +55,7 @@ export default function Home() {
             </div>
           )}
 
-          <h1 className={`font-bold tracking-tight mb-4 ${isConnected ? "text-3xl sm:text-4xl" : "text-5xl sm:text-6xl mb-6"}`}>
+          <h1 className={`font-bold tracking-tight mb-4 ${isConnected ? "text-2xl sm:text-3xl md:text-4xl" : "text-3xl sm:text-5xl md:text-6xl mb-6"}`}>
             <span className="text-foreground">Subscribe once.</span>
             {" "}
             <span className="gradient-text">Pay automatically.</span>
@@ -76,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* Feature pills */}
-      <section className="flex flex-wrap justify-center gap-3">
+      <section className="grid gap-3 sm:flex sm:flex-wrap sm:justify-center">
         {[
           { icon: Shield, label: "Self-Custodial", desc: "Your keys, your funds" },
           { icon: Zap, label: "Sub-Cent Fees", desc: "Powered by Stellar" },

@@ -98,7 +98,7 @@ export default function SubscribePage() {
 
       {/* Custom Tab Navigation */}
       <div className="border-b border-border">
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           <button
             onClick={() => setActiveTab("my")}
             className={`pb-3 px-1 transition-all relative ${

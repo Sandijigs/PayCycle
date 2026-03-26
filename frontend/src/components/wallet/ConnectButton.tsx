@@ -12,8 +12,8 @@ export default function ConnectButton() {
   const { xlm, isLoading, refetch } = useBalance(address);
   const [copied, setCopied] = useState(false);
 
-  const truncateAddress = (addr: string) =>
-    `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+  const truncateAddress = (addr: string, short = false) =>
+    short ? `${addr.slice(0, 4)}..` : `${addr.slice(0, 4)}...${addr.slice(-4)}`;
 
   const copyAddress = () => {
     if (!address) return;
@@ -66,14 +66,15 @@ export default function ConnectButton() {
           </span>
         </div>
 
-        {/* Address chip — hidden on small screens */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border/50 text-sm">
+        {/* Address chip — abbreviated on mobile, full on desktop */}
+        <div className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-lg bg-card border border-border/50 text-sm">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
           </span>
-          <span className="font-mono font-medium text-foreground">
-            {truncateAddress(address)}
+          <span className="font-mono font-medium text-foreground text-xs sm:text-sm">
+            <span className="sm:hidden">{truncateAddress(address, true)}</span>
+            <span className="hidden sm:inline">{truncateAddress(address)}</span>
           </span>
           <button
             onClick={copyAddress}
@@ -103,10 +104,11 @@ export default function ConnectButton() {
   return (
     <button
       onClick={connect}
-      className="flex items-center gap-2 px-5 py-2.5 rounded-lg gradient-brand text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+      className="flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-lg gradient-brand text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
     >
       <Wallet className="h-4 w-4" />
-      Connect Wallet
+      <span className="hidden sm:inline">Connect Wallet</span>
+      <span className="sm:hidden">Connect</span>
     </button>
   );
 }

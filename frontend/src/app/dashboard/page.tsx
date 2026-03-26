@@ -67,14 +67,14 @@ function StatCard({
 }) {
   return (
     <Card className="rounded-2xl border-border/50">
-      <CardContent className="pt-6">
+      <CardContent className="p-4 sm:pt-6 sm:px-6">
         <div className="flex items-center gap-2 mb-2">
-          <div className="h-8 w-8 rounded-lg gradient-brand-subtle flex items-center justify-center">
-            <Icon className="h-4 w-4 text-primary" />
+          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg gradient-brand-subtle flex items-center justify-center flex-shrink-0">
+            <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </div>
-          <span className="text-sm text-muted-foreground">{label}</span>
+          <span className="text-xs sm:text-sm text-muted-foreground truncate">{label}</span>
         </div>
-        <p className="text-2xl font-bold tracking-tight">{value}</p>
+        <p className="text-lg sm:text-2xl font-bold tracking-tight truncate">{value}</p>
         {subtitle && (
           <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
         )}
@@ -91,7 +91,7 @@ function MerchantTab({ address, plcBalance }: { address: string; plcBalance: str
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -128,7 +128,7 @@ function MerchantTab({ address, plcBalance }: { address: string; plcBalance: str
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Total Plans"
@@ -182,7 +182,7 @@ function SubscriberTab({ address, plcBalance }: { address: string; plcBalance: s
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -236,7 +236,7 @@ function SubscriberTab({ address, plcBalance }: { address: string; plcBalance: s
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Active Subscriptions"
@@ -326,7 +326,7 @@ export default function DashboardPage() {
 
       {/* Tab Navigation */}
       <div className="border-b border-border">
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           <button
             onClick={() => setActiveTab("merchant")}
             className={`pb-3 px-1 transition-all relative ${
