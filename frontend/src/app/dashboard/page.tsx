@@ -9,6 +9,7 @@ import SubscriptionCard from "@/components/subscription/SubscriptionCard";
 import PlanCard from "@/components/subscription/PlanCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import ActivityFeed from "@/components/ActivityFeed";
 import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins } from "lucide-react";
 
 type RoleTab = "merchant" | "subscriber";
@@ -356,9 +357,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === "merchant" && <MerchantTab address={address!} plcBalance={plcBalance} />}
-      {activeTab === "subscriber" && <SubscriberTab address={address!} plcBalance={plcBalance} />}
+      {/* Tab Content + Activity Feed */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+        <div>
+          {activeTab === "merchant" && <MerchantTab address={address!} plcBalance={plcBalance} />}
+          {activeTab === "subscriber" && <SubscriberTab address={address!} plcBalance={plcBalance} />}
+        </div>
+        <div className="order-first lg:order-last">
+          <ActivityFeed />
+        </div>
+      </div>
     </div>
   );
 }
