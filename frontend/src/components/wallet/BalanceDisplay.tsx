@@ -29,9 +29,8 @@ export default function BalanceDisplay() {
       } else {
         setFundingMessage("Friendbot funding failed. Try again later.");
       }
-    } catch (err) {
+    } catch {
       setFundingMessage("Error connecting to Friendbot");
-      console.error("Friendbot error:", err);
     } finally {
       setIsFunding(false);
       setTimeout(() => setFundingMessage(null), 5000);

@@ -197,6 +197,16 @@ async function getLatestLedger(): Promise<number> {
 
 // ---- Hook ----
 
+/**
+ * Polls Soroban RPC `getEvents` for recent subscription and PLC token contract
+ * events, classifies them by type, and auto-invalidates React Query caches
+ * (plans, subscriptions, balances) when new events arrive.
+ *
+ * Refreshes every 15 s, looking back ~2 000 ledgers (~2.8 h at 5 s/ledger).
+ *
+ * @param enabled - Pass `false` to disable polling (e.g. when wallet is disconnected).
+ * @returns `{ events, isLoading, error }` — events sorted newest-first.
+ */
 export function useContractEvents(enabled = true) {
   const queryClient = useQueryClient();
 

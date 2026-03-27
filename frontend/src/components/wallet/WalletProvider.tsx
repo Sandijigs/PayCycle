@@ -61,9 +61,8 @@ export default function WalletProvider({
           setAddress(pubKey);
           setIsConnected(true);
         }
-      } catch (error) {
-        // Wallet not connected, ignore
-        console.log("Wallet not connected on load");
+      } catch {
+        // Wallet not connected on initial load — expected
       }
     };
 
@@ -71,10 +70,7 @@ export default function WalletProvider({
   }, []);
 
   const connect = async () => {
-    if (!kit) {
-      console.error("WalletKit not initialized");
-      return;
-    }
+    if (!kit) return;
 
     setIsConnecting(true);
     try {
@@ -86,8 +82,8 @@ export default function WalletProvider({
           setIsConnected(true);
         },
       });
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
+    } catch {
+      // User cancelled or wallet unavailable
     } finally {
       setIsConnecting(false);
     }

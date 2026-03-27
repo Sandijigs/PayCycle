@@ -39,6 +39,22 @@ Cancel anytime with one click
 | Keeper | `CCYCHDQLVTYJZLMJ5F5MEGKESZMQABWDBDDWMNHJ5CKLHKEMESJX5DTA` | Testnet |
 | XLM SAC | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | Testnet |
 
+### Inter-Contract Call Proof
+
+The Keeper contract orchestrates 5 inter-contract calls per payment cycle (see [architecture.md](docs/architecture.md)):
+
+| Step | Contract Call | Purpose |
+|------|-------------|---------|
+| 1 | `subscription.get_subscription()` | Read subscriber + plan_id |
+| 2 | `subscription.get_plan()` | Read merchant address |
+| 3 | `subscription.execute_payment()` | Transfer tokens via `transfer_from` |
+| 4 | `plc_token.mint(subscriber)` | Reward subscriber with PLC |
+| 5 | `plc_token.mint(merchant)` | Reward merchant with PLC |
+
+**Testnet token approval tx (cross-contract):** [`558137d0...`](https://stellar.expert/explorer/testnet/tx/558137d003dc063b929eb9cd352f0d0ba8270c2b473907e8189d6d35971182ae) — alice approves subscription contract to spend XLM via SAC.
+
+The full 5-call keeper flow is validated by the 4 keeper integration tests (`cargo test -p pay_cycle_keeper`).
+
 ### Test Output
 
 **Contract Tests (29 passing — 12 subscription + 13 token + 4 keeper):**
@@ -115,7 +131,10 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | React Query Caching | Plans cached 30s, subscriptions 15s, auto-invalidated on mutations |
 | Toast Notifications | Success/error feedback on all actions via sonner |
 | Error Boundary | Graceful crash recovery with "Try Again" |
-| Mobile Responsive | Hamburger navigation for small screens |
+| Activity Feed | Real-time protocol event feed via Soroban RPC `getEvents` polling |
+| Event-Driven Refresh | Auto-invalidates caches when new contract events arrive |
+| Mobile Responsive | Hamburger navigation, responsive stat grids, abbreviated addresses |
+| CI/CD | GitHub Actions pipeline: contract tests, frontend tests, frontend lint |
 | Vercel Deployment | Production-ready with environment variable configuration |
 
 ### Transaction Flow
@@ -359,8 +378,8 @@ Providers (QueryClient + Wallet)
 | **White Belt** | Wallet integration, XLM transfers, testnet setup | Done |
 | **Yellow Belt** | Soroban smart contract, subscription contract v1 | Done |
 | **Orange Belt** | Dashboard, plan management, caching, deployment | Done |
-| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls | In Progress |
-| **Blue Belt** | TypeScript SDK, merchant integration API, CI/CD | Planned |
+| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls, CI/CD, mobile responsive | Done |
+| **Blue Belt** | TypeScript SDK, merchant integration API | Planned |
 | **Black Belt** | Mainnet launch, security audit, user acquisition | Planned |
 
 ---

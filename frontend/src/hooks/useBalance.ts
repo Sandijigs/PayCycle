@@ -73,6 +73,16 @@ async function fetchPlcBalance(address: string): Promise<string> {
   }
 }
 
+/**
+ * Fetches XLM (native) and PLC (Soroban token) balances for a Stellar address.
+ *
+ * Uses React Query with auto-refresh (30 s) so the UI stays current after
+ * transactions. XLM is fetched via Horizon; PLC via a read-only Soroban
+ * simulation of the token contract's `balance()` method.
+ *
+ * @param address - Stellar public key, or `null` when wallet is disconnected.
+ * @returns `{ xlm, plc, isLoading, error, refetch }`
+ */
 export function useBalance(address: string | null): Balance {
   const {
     data: xlm,

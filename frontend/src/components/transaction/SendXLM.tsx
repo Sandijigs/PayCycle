@@ -123,8 +123,6 @@ export default function SendXLM() {
         refetch();
       }, 2000);
     } catch (error: any) {
-      console.error("Transaction error:", error);
-
       let message = "Transaction failed";
       if (error.message?.includes("user")) {
         message = "Transaction rejected by user";

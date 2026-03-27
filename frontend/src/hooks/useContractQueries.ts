@@ -6,8 +6,7 @@ import { useWallet } from "@/hooks/useWallet";
 import type { PlanData, SubscriptionData, CreatePlanParams } from "@/types/subscription";
 import { toast } from "sonner";
 
-// ---- Query key constants ----
-
+/** Centralised React Query key factories for cache invalidation. */
 export const queryKeys = {
   merchantPlans: (addr: string) => ["merchantPlans", addr] as const,
   allPlans: ["allPlans"] as const,
@@ -15,8 +14,7 @@ export const queryKeys = {
   subscription: (id: number) => ["subscription", id] as const,
 };
 
-// ---- Query hooks ----
-
+/** Fetches all plans created by the given merchant address. Stale after 30 s. */
 export function useMerchantPlans(address: string | null) {
   const { getMerchantPlans } = useSubscription();
 
@@ -36,6 +34,7 @@ export function useMerchantPlans(address: string | null) {
   });
 }
 
+/** Fetches every active plan across all merchants. Stale after 30 s. */
 export function useAllActivePlans() {
   const { getPlanCount, getPlan } = useSubscription();
 
@@ -65,6 +64,7 @@ export function useAllActivePlans() {
   });
 }
 
+/** Fetches all subscriptions (with their parent plan) for a user address. Stale after 15 s. */
 export function useUserSubscriptions(address: string | null) {
   const { getUserSubscriptions, getSubscription, getPlan } = useSubscription();
 
@@ -95,8 +95,7 @@ export function useUserSubscriptions(address: string | null) {
   });
 }
 
-// ---- Mutation hooks ----
-
+/** Creates a subscription plan and invalidates merchant + all-plans caches on success. */
 export function useCreatePlanMutation() {
   const queryClient = useQueryClient();
   const { address } = useWallet();
@@ -117,6 +116,7 @@ export function useCreatePlanMutation() {
   });
 }
 
+/** Subscribes to a plan and invalidates subscription + plan caches on success. */
 export function useSubscribeMutation() {
   const queryClient = useQueryClient();
   const { address } = useWallet();
@@ -138,6 +138,7 @@ export function useSubscribeMutation() {
   });
 }
 
+/** Cancels a subscription and refreshes user subscriptions cache. */
 export function useCancelMutation() {
   const queryClient = useQueryClient();
   const { address } = useWallet();
@@ -157,6 +158,7 @@ export function useCancelMutation() {
   });
 }
 
+/** Pauses a subscription and refreshes user subscriptions cache. */
 export function usePauseMutation() {
   const queryClient = useQueryClient();
   const { address } = useWallet();
@@ -176,6 +178,7 @@ export function usePauseMutation() {
   });
 }
 
+/** Resumes a paused subscription and refreshes user subscriptions cache. */
 export function useResumeMutation() {
   const queryClient = useQueryClient();
   const { address } = useWallet();
