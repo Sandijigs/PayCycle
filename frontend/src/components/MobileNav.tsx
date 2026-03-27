@@ -44,14 +44,14 @@ export default function MobileNav() {
       {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 top-[calc(4rem+2px)] z-30 bg-black/40"
+          className="fixed inset-0 top-[calc(4rem+2px)] z-40 bg-black/50"
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Slide-down menu */}
       {open && (
-        <div className="fixed top-[calc(4rem+2px)] left-0 right-0 z-40 glass border-b border-border/50 animate-in slide-in-from-top-2 duration-200">
+        <div className="fixed top-[calc(4rem+2px)] left-0 right-0 z-50 bg-background border-b border-border/50 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">
             {navItems.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
