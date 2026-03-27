@@ -66,15 +66,14 @@ export default function ConnectButton() {
           </span>
         </div>
 
-        {/* Address chip — abbreviated on mobile, full on desktop */}
-        <div className="flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-lg bg-card border border-border/50 text-sm">
+        {/* Address chip — hidden on mobile to preserve hamburger space */}
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border/50 text-sm">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
           </span>
-          <span className="font-mono font-medium text-foreground text-xs sm:text-sm">
-            <span className="sm:hidden">{truncateAddress(address, true)}</span>
-            <span className="hidden sm:inline">{truncateAddress(address)}</span>
+          <span className="font-mono font-medium text-foreground text-sm">
+            {truncateAddress(address)}
           </span>
           <button
             onClick={copyAddress}
