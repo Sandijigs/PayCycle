@@ -83,7 +83,17 @@ export default function WalletProvider({
         },
       });
     } catch {
-      // User cancelled or wallet unavailable
+      // If modal fails (e.g. no wallets shown), try Freighter directly
+      try {
+        kit.setWallet(FREIGHTER_ID);
+        const { address: pubKey } = await kit.getAddress();
+        if (pubKey) {
+          setAddress(pubKey);
+          setIsConnected(true);
+        }
+      } catch {
+        // User cancelled or Freighter genuinely not installed
+      }
     } finally {
       setIsConnecting(false);
     }
