@@ -57,8 +57,7 @@ The full 5-call keeper flow is validated by the 4 keeper integration tests (`car
 
 ### Mobile Responsive UI
 
-<!-- ADD YOUR MOBILE SCREENSHOT(S) HERE -->
-<!-- Example: ![Mobile View](./docs/mobile-responsive.png) -->
+![Mobile Menu Closed](./docs/mobile-closed.png) ![Mobile Menu Open](./docs/mobile-open.png)
 
 ### Test Output
 
