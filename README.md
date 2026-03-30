@@ -55,6 +55,11 @@ The Keeper contract orchestrates 5 inter-contract calls per payment cycle (see [
 
 The full 5-call keeper flow is validated by the 4 keeper integration tests (`cargo test -p pay_cycle_keeper`).
 
+### Mobile Responsive UI
+
+<!-- ADD YOUR MOBILE SCREENSHOT(S) HERE -->
+<!-- Example: ![Mobile View](./docs/mobile-responsive.png) -->
+
 ### Test Output
 
 **Contract Tests (29 passing — 12 subscription + 13 token + 4 keeper):**
