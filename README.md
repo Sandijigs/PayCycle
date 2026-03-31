@@ -71,6 +71,10 @@ The full 5-call keeper flow is validated by the 4 keeper integration tests (`car
 <!-- ADD YOUR FRONTEND TEST SCREENSHOT HERE -->
 <!-- Example: ![Frontend Tests](./docs/frontend-tests.png) -->
 
+### CI/CD Pipeline
+
+![CI Pipeline](./docs/pipeline%20screenshot%20.png)
+
 ---
 
 ## Why PayCycle?
