@@ -2,8 +2,8 @@
 resolver = "2"
 members = [
     "subscription",
-    # "token",    # Uncomment at Green Belt
-    # "keeper",   # Uncomment at Green Belt
+    "token",
+    "keeper",
 ]
 
 [workspace.dependencies]

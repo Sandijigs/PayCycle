@@ -57,7 +57,7 @@ export default function PlanCard({ plan, onClick }: PlanCardProps) {
       <CardContent className="space-y-4">
         {/* Price */}
         <div>
-          <span className="text-3xl font-bold tracking-tight text-foreground">
+          <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             {displayAmount}
           </span>
           <span className="text-muted-foreground ml-1">
@@ -69,15 +69,15 @@ export default function PlanCard({ plan, onClick }: PlanCardProps) {
         </div>
 
         {/* Stats row */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4 flex-shrink-0" />
             <span>
               {plan.subscriberCount} subscriber{plan.subscriberCount !== 1 ? "s" : ""}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" />
+            <Clock className="h-4 w-4 flex-shrink-0" />
             <span>
               Created {new Date(plan.createdAt * 1000).toLocaleDateString()}
             </span>

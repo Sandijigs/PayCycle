@@ -1,4 +1,3 @@
-#![allow(unused)]
 use soroban_sdk::{Env, Address, symbol_short};
 
 pub fn emit_plan_created(env: &Env, plan_id: u64, merchant: &Address) {
@@ -42,5 +41,3 @@ pub fn emit_subscription_resumed(env: &Env, subscription_id: u64) {
         subscription_id,
     );
 }
-
-// TODO: These event functions are ready. Wire them into lib.rs at Yellow Belt.

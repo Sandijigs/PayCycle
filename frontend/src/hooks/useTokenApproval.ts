@@ -6,6 +6,14 @@ import type { TxStatus } from "@/types/subscription";
 const NETWORK_PASSPHRASE = StellarSdk.Networks.TESTNET;
 const RPC_URL = "https://soroban-testnet.stellar.org";
 
+/**
+ * Manages SEP-41 token approval transactions.
+ *
+ * Builds, signs, and submits a `token.approve(from, spender, amount, expiry)`
+ * call so the subscription contract can later `transfer_from` the subscriber.
+ *
+ * @returns `{ approveToken, isApproving, approvalStatus, approvalHash, error, resetApproval }`
+ */
 export function useTokenApproval() {
   const { address, kit } = useWallet();
 

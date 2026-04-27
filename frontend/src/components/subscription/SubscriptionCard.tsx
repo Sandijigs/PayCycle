@@ -160,8 +160,8 @@ export default function SubscriptionCard({
             <DollarSign className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Payment</span>
           </div>
-          <p className="text-2xl font-bold">
-            {displayAmount} <span className="text-lg text-muted-foreground">{tokenSymbol}</span>
+          <p className="text-xl sm:text-2xl font-bold">
+            {displayAmount} <span className="text-base sm:text-lg text-muted-foreground">{tokenSymbol}</span>
           </p>
           <p className="text-sm text-muted-foreground">per {intervalDisplay}</p>
         </div>

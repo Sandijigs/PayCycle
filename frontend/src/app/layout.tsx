@@ -27,9 +27,9 @@ export default function RootLayout({
 
           <header className="sticky top-0 z-50 glass">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Link href="/" className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Link href="/" className="flex items-center gap-2 sm:gap-3">
+                  <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
                     </svg>
@@ -70,7 +70,7 @@ export default function RootLayout({
                   Subscribe
                 </Link>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <ConnectButton />
                 <MobileNav />
               </div>

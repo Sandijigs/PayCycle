@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { useWallet } from "@/hooks/useWallet";
+import { useBalance } from "@/hooks/useBalance";
 import { useMerchantPlans, useUserSubscriptions } from "@/hooks/useContractQueries";
 import { TOKENS } from "@/lib/contracts";
 import SubscriptionCard from "@/components/subscription/SubscriptionCard";
 import PlanCard from "@/components/subscription/PlanCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign } from "lucide-react";
+import ActivityFeed from "@/components/ActivityFeed";
+import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins } from "lucide-react";
 
 type RoleTab = "merchant" | "subscriber";
 
@@ -66,14 +68,14 @@ function StatCard({
 }) {
   return (
     <Card className="rounded-2xl border-border/50">
-      <CardContent className="pt-6">
+      <CardContent className="p-4 sm:pt-6 sm:px-6">
         <div className="flex items-center gap-2 mb-2">
-          <div className="h-8 w-8 rounded-lg gradient-brand-subtle flex items-center justify-center">
-            <Icon className="h-4 w-4 text-primary" />
+          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg gradient-brand-subtle flex items-center justify-center flex-shrink-0">
+            <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </div>
-          <span className="text-sm text-muted-foreground">{label}</span>
+          <span className="text-xs sm:text-sm text-muted-foreground truncate">{label}</span>
         </div>
-        <p className="text-2xl font-bold tracking-tight">{value}</p>
+        <p className="text-lg sm:text-2xl font-bold tracking-tight truncate">{value}</p>
         {subtitle && (
           <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
         )}
@@ -84,13 +86,14 @@ function StatCard({
 
 // ---- Merchant Tab ----
 
-function MerchantTab({ address }: { address: string }) {
+function MerchantTab({ address, plcBalance }: { address: string; plcBalance: string | null }) {
   const { data: plans, isLoading, error } = useMerchantPlans(address);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -126,7 +129,7 @@ function MerchantTab({ address }: { address: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Total Plans"
@@ -143,6 +146,12 @@ function MerchantTab({ address }: { address: string }) {
           label="Monthly Revenue"
           value={`${monthlyRevenue.toFixed(2)} XLM`}
           subtitle="Estimated MRR"
+        />
+        <StatCard
+          icon={Coins}
+          label="PLC Earned"
+          value={plcBalance ? `${parseFloat(plcBalance).toLocaleString()} PLC` : "0 PLC"}
+          subtitle="Reward tokens from payments"
         />
       </div>
 
@@ -168,13 +177,14 @@ function MerchantTab({ address }: { address: string }) {
 
 // ---- Subscriber Tab ----
 
-function SubscriberTab({ address }: { address: string }) {
+function SubscriberTab({ address, plcBalance }: { address: string; plcBalance: string | null }) {
   const { data: enrichedSubs, isLoading, error, refetch } = useUserSubscriptions(address);
 
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
           <StatCardSkeleton />
@@ -227,7 +237,7 @@ function SubscriberTab({ address }: { address: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Active Subscriptions"
@@ -245,6 +255,12 @@ function SubscriberTab({ address }: { address: string }) {
           label="Monthly Spending"
           value={`${monthlySpending.toFixed(2)} XLM`}
           subtitle="Estimated"
+        />
+        <StatCard
+          icon={Coins}
+          label="PLC Earned"
+          value={plcBalance ? `${parseFloat(plcBalance).toLocaleString()} PLC` : "0 PLC"}
+          subtitle="Reward tokens from payments"
         />
       </div>
 
@@ -277,6 +293,7 @@ function SubscriberTab({ address }: { address: string }) {
 
 export default function DashboardPage() {
   const { address, isConnected } = useWallet();
+  const { plc: plcBalance } = useBalance(address);
   const [activeTab, setActiveTab] = useState<RoleTab>("merchant");
 
   if (!isConnected) {
@@ -310,7 +327,7 @@ export default function DashboardPage() {
 
       {/* Tab Navigation */}
       <div className="border-b border-border">
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           <button
             onClick={() => setActiveTab("merchant")}
             className={`pb-3 px-1 transition-all relative ${
@@ -340,9 +357,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === "merchant" && <MerchantTab address={address!} />}
-      {activeTab === "subscriber" && <SubscriberTab address={address!} />}
+      {/* Tab Content + Activity Feed */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+        <div>
+          {activeTab === "merchant" && <MerchantTab address={address!} plcBalance={plcBalance} />}
+          {activeTab === "subscriber" && <SubscriberTab address={address!} plcBalance={plcBalance} />}
+        </div>
+        <div className="order-first lg:order-last">
+          <ActivityFeed />
+        </div>
+      </div>
     </div>
   );
 }

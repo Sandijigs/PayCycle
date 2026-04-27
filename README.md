@@ -1,5 +1,7 @@
 # PayCycle
 
+[![CI](https://github.com/Sandijigs/PayCycle/actions/workflows/ci.yml/badge.svg)](https://github.com/Sandijigs/PayCycle/actions/workflows/ci.yml)
+
 **Programmable Recurring Payments Protocol for Stellar**
 
 PayCycle is a pre-authorized debit protocol built on Soroban smart contracts that brings subscription billing infrastructure to the Stellar ecosystem. Users approve a spending cap once, and payments flow automatically — fully self-custodial, transparent on-chain, and cancellable anytime.
@@ -24,11 +26,42 @@ Cancel anytime with one click
 |----------|------|
 | **Live Demo** | [frontend-seven-alpha-99.vercel.app](https://frontend-seven-alpha-99.vercel.app) |
 | **Demo Video (1 min)** | [YouTube — PayCycle Demo](https://youtu.be/uOhB9rMPtSM) |
-| **Contract on Testnet** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
+| **Subscription Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD) |
+| **PLC Token Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB) |
+| **Keeper Contract** | [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCYCHDQLVTYJZLMJ5F5MEGKESZMQABWDBDDWMNHJ5CKLHKEMESJX5DTA) |
 
-### Test Output (3+ tests passing)
+### Deployed Contracts
 
-**Contract Tests (12 passing):**
+| Contract | Address | Network |
+|----------|---------|---------|
+| Subscription | `CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD` | Testnet |
+| PLC Token (SEP-41) | `CB6X6N4ZMBQPBPJIIQYK745BEN67WFRJVUXCJRQ64S23ZB5HT32IYHOB` | Testnet |
+| Keeper | `CCYCHDQLVTYJZLMJ5F5MEGKESZMQABWDBDDWMNHJ5CKLHKEMESJX5DTA` | Testnet |
+| XLM SAC | `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC` | Testnet |
+
+### Inter-Contract Call Proof
+
+The Keeper contract orchestrates 5 inter-contract calls per payment cycle (see [architecture.md](docs/architecture.md)):
+
+| Step | Contract Call | Purpose |
+|------|-------------|---------|
+| 1 | `subscription.get_subscription()` | Read subscriber + plan_id |
+| 2 | `subscription.get_plan()` | Read merchant address |
+| 3 | `subscription.execute_payment()` | Transfer tokens via `transfer_from` |
+| 4 | `plc_token.mint(subscriber)` | Reward subscriber with PLC |
+| 5 | `plc_token.mint(merchant)` | Reward merchant with PLC |
+
+**Testnet token approval tx (cross-contract):** [`558137d0...`](https://stellar.expert/explorer/testnet/tx/558137d003dc063b929eb9cd352f0d0ba8270c2b473907e8189d6d35971182ae) — alice approves subscription contract to spend XLM via SAC.
+
+The full 5-call keeper flow is validated by the 4 keeper integration tests (`cargo test -p pay_cycle_keeper`).
+
+### Mobile Responsive UI
+
+![Mobile Menu Closed](./docs/mobile-closed.png) ![Mobile Menu Open](./docs/mobile-open.png)
+
+### Test Output
+
+**Contract Tests (29 passing — 12 subscription + 13 token + 4 keeper):**
 
 <img width="1011" height="237" alt="Screenshot 2026-02-24 at 11 50 52 am" src="https://github.com/user-attachments/assets/9f6f2e2a-c78d-4324-840a-f511dcd4d697" />
 
@@ -37,6 +70,10 @@ Cancel anytime with one click
 
 <img width="983" height="175" alt="Screenshot 2026-02-24 at 11 47 56 am" src="https://github.com/user-attachments/assets/979e8ca5-7c86-41fd-a081-3c356daa911a" />
 
+
+### CI/CD Pipeline
+
+![CI Pipeline](./docs/pipeline%20screenshot%20.png)
 
 ---
 
@@ -57,7 +94,9 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 
 ## Features
 
-### Smart Contract (Soroban/Rust)
+### Smart Contracts (Soroban/Rust)
+
+**Subscription Contract:**
 
 | Feature | Description |
 |---------|-------------|
@@ -68,6 +107,24 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | Cancel | One-click cancellation with immediate effect |
 | Fee Collection | 0.5% protocol fee on each payment |
 | Initialization | Admin-controlled setup with configurable fee collector |
+
+**PLC Token Contract (SEP-41):**
+
+| Feature | Description |
+|---------|-------------|
+| SEP-41 Compliant | Full token interface: transfer, approve, transfer_from, burn, burn_from |
+| Metadata | name="PayCycle Token", symbol="PLC", decimals=7 |
+| Admin Minting | Admin-controlled `mint` for reward distribution |
+| Allowance System | Temporary storage with ledger-based expiration |
+| TTL Management | Automatic TTL extension on balance and allowance access |
+
+**Keeper Contract (Inter-Contract Calls):**
+
+| Feature | Description |
+|---------|-------------|
+| Execute & Reward | 5 inter-contract calls: read subscription → read plan → execute payment → mint PLC to subscriber → mint PLC to merchant |
+| Batch Execute | Loop through multiple subscription IDs, atomic all-or-nothing |
+| Reward Config | Configurable PLC reward amounts for subscribers and merchants |
 
 ### Frontend (Next.js)
 
@@ -82,7 +139,10 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 | React Query Caching | Plans cached 30s, subscriptions 15s, auto-invalidated on mutations |
 | Toast Notifications | Success/error feedback on all actions via sonner |
 | Error Boundary | Graceful crash recovery with "Try Again" |
-| Mobile Responsive | Hamburger navigation for small screens |
+| Activity Feed | Real-time protocol event feed via Soroban RPC `getEvents` polling |
+| Event-Driven Refresh | Auto-invalidates caches when new contract events arrive |
+| Mobile Responsive | Hamburger navigation, responsive stat grids, abbreviated addresses |
+| CI/CD | GitHub Actions pipeline: contract tests, frontend tests, frontend lint |
 | Vercel Deployment | Production-ready with environment variable configuration |
 
 ### Transaction Flow
@@ -119,13 +179,21 @@ PayCycle solves this by providing a **protocol-level solution** that any Stellar
 ```
 paycycle/
 ├── contracts/
-│   └── subscription/
+│   ├── subscription/
+│   │   └── src/
+│   │       ├── lib.rs           # Subscription contract (create_plan, subscribe, execute_payment, etc.)
+│   │       ├── types.rs         # PlanData, SubscriptionData, PlanStatus, SubscriptionStatus
+│   │       ├── errors.rs        # PayCycleError enum (12 error variants)
+│   │       ├── events.rs        # Contract event definitions
+│   │       └── test.rs          # 12 contract tests
+│   ├── token/
+│   │   └── src/
+│   │       ├── lib.rs           # PLC token (SEP-41): mint, burn, transfer, approve, metadata
+│   │       └── test.rs          # 13 token tests
+│   └── keeper/
 │       └── src/
-│           ├── lib.rs           # Contract implementation (create_plan, subscribe, execute_payment, etc.)
-│           ├── types.rs         # PlanData, SubscriptionData, PlanStatus, SubscriptionStatus
-│           ├── errors.rs        # PayCycleError enum (12 error variants)
-│           ├── events.rs        # Contract event definitions
-│           └── test.rs          # 12 contract tests
+│           ├── lib.rs           # Keeper: execute_and_reward, batch_execute (5 inter-contract calls)
+│           └── test.rs          # 4 keeper integration tests
 ├── frontend/
 │   └── src/
 │       ├── app/
@@ -318,8 +386,8 @@ Providers (QueryClient + Wallet)
 | **White Belt** | Wallet integration, XLM transfers, testnet setup | Done |
 | **Yellow Belt** | Soroban smart contract, subscription contract v1 | Done |
 | **Orange Belt** | Dashboard, plan management, caching, deployment | Done |
-| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls | Planned |
-| **Blue Belt** | TypeScript SDK, merchant integration API, CI/CD | Planned |
+| **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls, CI/CD, mobile responsive | Done |
+| **Blue Belt** | TypeScript SDK, merchant integration API | Planned |
 | **Black Belt** | Mainnet launch, security audit, user acquisition | Planned |
 
 ---

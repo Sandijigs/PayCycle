@@ -12,5 +12,5 @@ soroban-token-sdk = { workspace = true }
 
 [dev-dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
-
-# NOTE: Uncomment this crate in workspace Cargo.toml at Green Belt
+pay-cycle-subscription = { path = "../subscription" }
+pay-cycle-token = { path = "../token" }

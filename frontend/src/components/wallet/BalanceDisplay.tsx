@@ -2,12 +2,12 @@
 
 import { useWallet } from "@/hooks/useWallet";
 import { useBalance } from "@/hooks/useBalance";
-import { RefreshCw, Loader2, Wallet, Droplets, Copy, Check } from "lucide-react";
+import { RefreshCw, Loader2, Wallet, Droplets, Copy, Check, Coins } from "lucide-react";
 import { useState } from "react";
 
 export default function BalanceDisplay() {
   const { address, isConnected } = useWallet();
-  const { xlm, isLoading, error, refetch } = useBalance(address);
+  const { xlm, plc, isLoading, error, refetch } = useBalance(address);
   const [isFunding, setIsFunding] = useState(false);
   const [fundingMessage, setFundingMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -29,9 +29,8 @@ export default function BalanceDisplay() {
       } else {
         setFundingMessage("Friendbot funding failed. Try again later.");
       }
-    } catch (err) {
+    } catch {
       setFundingMessage("Error connecting to Friendbot");
-      console.error("Friendbot error:", err);
     } finally {
       setIsFunding(false);
       setTimeout(() => setFundingMessage(null), 5000);
@@ -61,7 +60,7 @@ export default function BalanceDisplay() {
 
   return (
     <div className="rounded-2xl border border-border/50 bg-card overflow-hidden flex flex-col">
-      {/* Gradient header with balance */}
+      {/* Gradient header with XLM balance */}
       <div className="gradient-brand p-6">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-medium text-white/70">XLM Balance</p>
@@ -94,6 +93,23 @@ export default function BalanceDisplay() {
 
       {/* Info rows */}
       <div className="p-5 space-y-3 flex-1">
+        {/* PLC Token Balance */}
+        {plc && parseFloat(plc) > 0 && (
+          <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-background border border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                <Coins className="h-3.5 w-3.5 text-violet-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">PLC Rewards</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {parseFloat(plc).toLocaleString()} PLC
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Wallet address */}
         <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-background border border-border/50">
           <div className="min-w-0">

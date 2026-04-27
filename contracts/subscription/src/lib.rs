@@ -1,8 +1,8 @@
 #![no_std]
 
-mod types;
-mod errors;
-mod events;
+pub mod types;
+pub mod errors;
+pub mod events;
 
 use soroban_sdk::{contract, contractimpl, token, Address, Env, String, Vec};
 use types::*;
@@ -106,6 +106,7 @@ impl SubscriptionContract {
         env.storage().instance().set(&plan_key(plan_id), &plan);
         env.storage().instance().set(&PLAN_COUNT, &plan_id);
 
+        events::emit_plan_created(&env, plan_id, &plan.merchant);
         Ok(plan_id)
     }
 
@@ -167,6 +168,7 @@ impl SubscriptionContract {
         plan.subscriber_count += 1;
         env.storage().instance().set(&plan_key(plan_id), &plan);
 
+        events::emit_subscribed(&env, subscription_id, &subscriber, plan_id);
         Ok(subscription_id)
     }
 
@@ -191,6 +193,8 @@ impl SubscriptionContract {
         // Update subscription status
         subscription.status = SubscriptionStatus::Cancelled;
         env.storage().instance().set(&sub_key(subscription_id), &subscription);
+
+        events::emit_subscription_cancelled(&env, subscription_id);
 
         // Decrement plan's subscriber count
         let mut plan: PlanData = env.storage().instance().get(&plan_key(subscription.plan_id))
@@ -230,6 +234,7 @@ impl SubscriptionContract {
         subscription.status = SubscriptionStatus::Paused;
         env.storage().instance().set(&sub_key(subscription_id), &subscription);
 
+        events::emit_subscription_paused(&env, subscription_id);
         Ok(())
     }
 
@@ -264,6 +269,7 @@ impl SubscriptionContract {
         subscription.next_payment = env.ledger().timestamp() + plan.interval;
         env.storage().instance().set(&sub_key(subscription_id), &subscription);
 
+        events::emit_subscription_resumed(&env, subscription_id);
         Ok(())
     }
 
@@ -343,6 +349,7 @@ impl SubscriptionContract {
         subscription.payments_made += 1;
         env.storage().instance().set(&sub_key(subscription_id), &subscription);
 
+        events::emit_payment_executed(&env, subscription_id, plan.amount);
         Ok(true)
     }
 

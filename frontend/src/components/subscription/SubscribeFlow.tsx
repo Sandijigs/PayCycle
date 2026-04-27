@@ -72,8 +72,8 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
 
       // Auto-advance to step 3 on success
       setStep(3);
-    } catch (err) {
-      console.error("Approval failed:", err);
+    } catch {
+      // Error already surfaced via hook state
     }
   };
 
@@ -90,8 +90,8 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
 
       // Wait a moment for success state to show
       setTimeout(() => onSuccess(), 2000);
-    } catch (err) {
-      console.error("Subscribe failed:", err);
+    } catch {
+      // Error already surfaced via hook state
     }
   };
 
