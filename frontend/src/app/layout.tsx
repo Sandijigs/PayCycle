@@ -69,6 +69,12 @@ export default function RootLayout({
                 >
                   Subscribe
                 </Link>
+                <Link
+                  href="/onboarding"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                >
+                  Get Started
+                </Link>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <ConnectButton />

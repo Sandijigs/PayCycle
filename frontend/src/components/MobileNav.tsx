@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, LayoutDashboard, LayoutGrid, Grid3x3, Home } from "lucide-react";
+import { Menu, X, LayoutDashboard, LayoutGrid, Grid3x3, Home, Rocket } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/plans", label: "My Plans", icon: LayoutGrid },
   { href: "/subscribe", label: "Subscribe", icon: Grid3x3 },
+  { href: "/onboarding", label: "Get Started", icon: Rocket },
 ];
 
 export default function MobileNav() {
