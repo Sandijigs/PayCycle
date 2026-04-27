@@ -10,7 +10,8 @@ import PlanCard from "@/components/subscription/PlanCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import ActivityFeed from "@/components/ActivityFeed";
-import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins } from "lucide-react";
+import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins, MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 type RoleTab = "merchant" | "subscriber";
 
@@ -363,8 +364,31 @@ export default function DashboardPage() {
           {activeTab === "merchant" && <MerchantTab address={address!} plcBalance={plcBalance} />}
           {activeTab === "subscriber" && <SubscriberTab address={address!} plcBalance={plcBalance} />}
         </div>
-        <div className="order-first lg:order-last">
+        <div className="order-first lg:order-last space-y-4">
           <ActivityFeed />
+          {/* Feedback CTA */}
+          <Card className="rounded-2xl border-primary/20 gradient-brand-subtle">
+            <CardContent className="pt-5 pb-4">
+              <div className="flex items-start gap-3">
+                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Help us improve</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 mb-2">
+                    Share your experience — takes under 2 minutes.
+                  </p>
+                  <Link
+                    href="/feedback"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                  >
+                    Give Feedback
+                    <span aria-hidden>&rarr;</span>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
