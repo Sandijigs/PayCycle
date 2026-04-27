@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ConnectButton from "@/components/wallet/ConnectButton";
+import NotificationBell from "@/components/NotificationBell";
 import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
@@ -77,6 +78,7 @@ export default function RootLayout({
                 </Link>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
+                <NotificationBell />
                 <ConnectButton />
                 <MobileNav />
               </div>
