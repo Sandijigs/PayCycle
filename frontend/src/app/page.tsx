@@ -3,7 +3,8 @@
 import SendXLM from "@/components/transaction/SendXLM";
 import { useWallet } from "@/hooks/useWallet";
 import { useBalance } from "@/hooks/useBalance";
-import { ArrowRight, Shield, Zap, Clock, Droplets, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Shield, Zap, Clock, Droplets, Loader2, Rocket } from "lucide-react";
 import { useState } from "react";
 
 export default function Home() {
@@ -66,9 +67,18 @@ export default function Home() {
           </p>
 
           {!isConnected && (
-            <div className="mt-8 flex items-center justify-center gap-3 text-sm text-muted-foreground">
-              <ArrowRight className="h-4 w-4 animate-pulse" />
-              Connect your Freighter wallet to get started
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+              >
+                <Rocket className="h-4 w-4" />
+                Get Started — Set Up in 5 Minutes
+              </Link>
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <ArrowRight className="h-3.5 w-3.5 animate-pulse" />
+                New to Stellar? Our setup guide walks you through everything.
+              </p>
             </div>
           )}
         </div>

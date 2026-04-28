@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import ActivityFeed from "@/components/ActivityFeed";
 import { Wallet, LayoutDashboard, Store, User, TrendingUp, Users, FileText, Clock, DollarSign, Coins, MessageSquare } from "lucide-react";
-import Link from "next/link";
 
 type RoleTab = "merchant" | "subscriber";
 
@@ -378,13 +377,15 @@ export default function DashboardPage() {
                   <p className="text-xs text-muted-foreground mt-0.5 mb-2">
                     Share your experience — takes under 2 minutes.
                   </p>
-                  <Link
-                    href="/feedback"
+                  <a
+                    href="https://forms.gle/EEbHGKuBsodKgPhz7"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
                   >
                     Give Feedback
                     <span aria-hidden>&rarr;</span>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </CardContent>
