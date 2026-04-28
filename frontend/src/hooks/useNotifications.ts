@@ -29,21 +29,38 @@ const STORAGE_KEY = "paycycle_notifications";
 const MAX_NOTIFICATIONS = 50;
 
 let listeners: Array<() => void> = [];
+let cachedSnapshot: AppNotification[] = [];
+const EMPTY: AppNotification[] = [];
 
 function emitChange() {
+  // Update cache before notifying listeners
+  cachedSnapshot = readFromStorage();
   for (const listener of listeners) {
     listener();
   }
 }
 
-function getSnapshot(): AppNotification[] {
-  if (typeof window === "undefined") return [];
+function readFromStorage(): AppNotification[] {
+  if (typeof window === "undefined") return EMPTY;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return raw ? JSON.parse(raw) : EMPTY;
   } catch {
-    return [];
+    return EMPTY;
   }
+}
+
+function getSnapshot(): AppNotification[] {
+  return cachedSnapshot;
+}
+
+function getServerSnapshot(): AppNotification[] {
+  return EMPTY;
+}
+
+// Initialize cache on module load (client only)
+if (typeof window !== "undefined") {
+  cachedSnapshot = readFromStorage();
 }
 
 function setNotifications(notifications: AppNotification[]) {
@@ -65,7 +82,7 @@ export function useNotifications(): NotificationStore {
   const notifications = useSyncExternalStore(
     subscribe,
     getSnapshot,
-    () => [] // server snapshot
+    getServerSnapshot
   );
 
   const unreadCount = notifications.filter((n) => !n.read).length;
