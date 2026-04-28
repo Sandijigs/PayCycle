@@ -4,7 +4,8 @@ import { PlanData, INTERVAL_LABELS, INTERVALS, type IntervalKey } from "@/types/
 import { TOKENS } from "@/lib/contracts";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Clock, ArrowRight } from "lucide-react";
+import { Users, Clock, ArrowRight, Share2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface PlanCardProps {
   plan: PlanData;
@@ -85,11 +86,24 @@ export default function PlanCard({ plan, onClick }: PlanCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0">
+      <CardFooter className="pt-0 flex items-center justify-between">
         <div className="flex items-center gap-1 text-sm text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
           View details
           <ArrowRight className="h-3.5 w-3.5" />
         </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            const url = `${window.location.origin}/plan/${plan.id}`;
+            navigator.clipboard.writeText(url);
+            toast.success("Plan link copied!");
+          }}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+          title="Copy shareable link"
+        >
+          <Share2 className="h-3.5 w-3.5" />
+          Share
+        </button>
       </CardFooter>
     </Card>
   );

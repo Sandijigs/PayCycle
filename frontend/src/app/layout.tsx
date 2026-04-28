@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ConnectButton from "@/components/wallet/ConnectButton";
+import NotificationBell from "@/components/NotificationBell";
 import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
@@ -69,8 +70,21 @@ export default function RootLayout({
                 >
                   Subscribe
                 </Link>
+                <Link
+                  href="/feedback"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  Feedback
+                </Link>
+                <Link
+                  href="/onboarding"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                >
+                  Get Started
+                </Link>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
+                <NotificationBell />
                 <ConnectButton />
                 <MobileNav />
               </div>
