@@ -31,12 +31,12 @@ Complete step-by-step guide for merchants and subscribers on Stellar Testnet.
 
 ### Step 3: Fund Your Wallet via Friendbot
 
-1. Go to [PayCycle](https://frontend-seven-alpha-99.vercel.app) and click **Connect Wallet**.
+1. Go to [PayCycle](https://paycycle.vercel.app) and click **Connect Wallet**.
 2. Approve the connection in Freighter.
 3. If your balance shows 0 XLM, click **Fund with Friendbot** on the homepage.
 4. Wait a few seconds — you'll receive 10,000 free testnet XLM.
 
-Alternatively, use the guided setup at [/onboarding](https://frontend-seven-alpha-99.vercel.app/onboarding) which walks you through all these steps in one place.
+Alternatively, use the guided setup at [/onboarding](https://paycycle.vercel.app/onboarding) which walks you through all these steps in one place.
 
 ### Step 4: Create Your First Plan
 
@@ -73,7 +73,7 @@ Once created, your plan appears in the **My Plans** page. To share it with subsc
 
 ### Option B: Browse Plans in the App
 
-1. Go to [PayCycle](https://frontend-seven-alpha-99.vercel.app) and connect your wallet.
+1. Go to [PayCycle](https://paycycle.vercel.app) and connect your wallet.
 2. Navigate to **Subscribe** in the top navigation.
 3. Click the **Browse Plans** tab to see all available plans.
 4. Click on a plan to start the subscription flow.
@@ -123,7 +123,7 @@ A 0.5% fee is deducted from each payment and sent to the protocol fee collector.
 
 ## Quick Links
 
-- **App:** [frontend-seven-alpha-99.vercel.app](https://frontend-seven-alpha-99.vercel.app)
-- **Get Started Guide:** [/onboarding](https://frontend-seven-alpha-99.vercel.app/onboarding)
+- **App:** [paycycle.vercel.app](https://paycycle.vercel.app)
+- **Get Started Guide:** [/onboarding](https://paycycle.vercel.app/onboarding)
 - **GitHub:** [github.com/Sandijigs/PayCycle](https://github.com/Sandijigs/PayCycle)
 - **Contract on Stellar Expert:** [View on Explorer](https://stellar.expert/explorer/testnet/contract/CBSG3PNVBSY32MOEEVYFVQPSOFSQGA5WEP3HTVX7YOXTSASWJ4TNT4KD)
