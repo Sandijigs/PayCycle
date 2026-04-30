@@ -11,8 +11,14 @@ import MobileNav from "@/components/MobileNav";
 export const metadata: Metadata = {
   title: "PayCycle — Recurring Payments on Stellar",
   description:
-    "The subscription billing protocol for Stellar. Add recurring payments to any dApp in 50 lines of code.",
+    "Programmable recurring payments protocol on Stellar. Subscribe once, pay automatically.",
 };
+
+const NAV_LINKS = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/plans", label: "Plans" },
+  { href: "/subscribe", label: "Subscribe" },
+];
 
 export default function RootLayout({
   children,
@@ -21,65 +27,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background">
+      <body className="min-h-screen bg-background flex flex-col">
         <Providers>
-          {/* Top accent line */}
-          <div className="h-[2px] gradient-brand" />
+          <header className="sticky top-0 z-50 bg-background">
+            <nav className="px-6 sm:px-10 h-20 flex items-center justify-between">
+              <Link href="/" className="flex-shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="PayCycle"
+                  className="h-10 sm:h-12 w-auto "
+                />
+              </Link>
 
-          <header className="sticky top-0 z-50 glass">
-            <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Link href="/" className="flex items-center gap-2 sm:gap-3">
-                  <div className="h-8 w-8 rounded-lg gradient-brand flex items-center justify-center flex-shrink-0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                    </svg>
-                  </div>
-                  <span className="text-xl font-bold tracking-tight gradient-text">
-                    PayCycle
-                  </span>
-                </Link>
-                <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                  Testnet
-                </span>
+              <div className="hidden sm:flex items-center gap-10">
+                {NAV_LINKS.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="text-base font-medium text-primary/70 hover:text-primary transition-colors"
+                  >
+                    {label}
+                  </Link>
+                ))}
               </div>
-              {/* Desktop navigation */}
-              <div className="hidden sm:flex items-center gap-1">
-                <Link
-                  href="/"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/plans"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  My Plans
-                </Link>
-                <Link
-                  href="/subscribe"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Subscribe
-                </Link>
-                <a
-                  href="https://forms.gle/EEbHGKuBsodKgPhz7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  Feedback
-                </a>
-              </div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
+
+              <div className="flex items-center gap-2">
                 <NotificationBell />
                 <ConnectButton />
                 <MobileNav />
@@ -87,38 +59,16 @@ export default function RootLayout({
             </nav>
           </header>
 
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <main className="flex-1">
             <ErrorBoundary>{children}</ErrorBoundary>
           </main>
 
-          <footer className="mt-auto border-t border-border/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="h-5 w-5 rounded gradient-brand opacity-60" />
-                  <span>PayCycle Protocol</span>
-                </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>Built on Soroban</span>
-                  <span className="text-border">|</span>
-                  <a
-                    href="https://stellar.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Powered by Stellar
-                  </a>
-                  <span className="text-border">|</span>
-                  <a
-                    href="https://github.com/Sandijigs/PayCycle"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary transition-colors"
-                  >
-                    GitHub
-                  </a>
-                </div>
+          <footer className="mt-auto">
+            <div className="px-6 sm:px-10 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+              <img src="/logo.png" alt="PayCycle" className="h-7 w-auto opacity-40 " />
+              <div className="flex items-center gap-4">
+                <a href="https://github.com/Sandijigs/PayCycle" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+                <a href="https://forms.gle/EEbHGKuBsodKgPhz7" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Feedback</a>
               </div>
             </div>
           </footer>

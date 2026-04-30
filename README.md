@@ -387,8 +387,49 @@ Providers (QueryClient + Wallet)
 | **Yellow Belt** | Soroban smart contract, subscription contract v1 | Done |
 | **Orange Belt** | Dashboard, plan management, caching, deployment | Done |
 | **Green Belt** | PLC token (SEP-41), keeper contract, inter-contract calls, CI/CD, mobile responsive | Done |
-| **Blue Belt** | TypeScript SDK, merchant integration API | Planned |
-| **Black Belt** | Mainnet launch, security audit, user acquisition | Planned |
+| **Blue Belt** | Full MVP, 5+ testnet users, feedback, iteration | In Progress |
+| **Black Belt** | Mainnet launch, security audit, analytics | Planned |
+
+---
+
+## User Feedback & Validation (Blue Belt)
+
+### Testnet Users
+
+5 real users tested PayCycle on Stellar Testnet. All wallet addresses are verifiable on [Stellar Expert](https://stellar.expert/explorer/testnet).
+
+See full details: [docs/testnet-users.md](docs/testnet-users.md)
+
+### Feedback Collection
+
+Feedback was collected via [Google Form](https://forms.gle/EEbHGKuBsodKgPhz7).
+
+Exported responses: [docs/user-feedback-responses.csv](docs/user-feedback-responses.csv)
+
+Full feedback report: [docs/user-feedback.md](docs/user-feedback.md)
+
+| Question | Average Score |
+|----------|---------------|
+| Ease of use | 4.4 / 5 |
+| Trust in payment model | 4.4 / 5 |
+| Transaction speed | 4.4 / 5 |
+| Overall rating | 5.0 / 5 |
+
+### Improvements Based on Feedback
+
+**Issue:** Trust in the pre-authorized payment model scored lowest (min 3/5). Users entering via shared plan links had no context about how spending caps and self-custody protect them before starting the subscribe flow.
+
+**What we changed:** Added a "How It Works" trust explainer section to the shareable plan page (`/plan/[id]`) that explains spending caps, self-custody, and instant cancellation step-by-step — so subscribers understand the safety model before they commit.
+
+**Improvement commit:** [`PENDING`] — will be updated with commit hash after push
+
+### Next Phase Plans
+
+Based on feedback from User 2 ("more features needed for mainnet"), the next phase will focus on:
+- Multi-token payment support (USDC alongside XLM)
+- Payment history and analytics dashboard
+- Email/webhook notifications for merchants
+- Mainnet deployment with security audit
 
 ---
 

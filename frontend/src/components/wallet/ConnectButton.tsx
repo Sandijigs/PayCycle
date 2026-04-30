@@ -103,7 +103,7 @@ export default function ConnectButton() {
   return (
     <button
       onClick={connect}
-      className="flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-lg gradient-brand text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
+      className="flex items-center gap-2 px-3 sm:px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-lg shadow-primary/25"
     >
       <Wallet className="h-4 w-4" />
       <span className="hidden sm:inline">Connect Wallet</span>

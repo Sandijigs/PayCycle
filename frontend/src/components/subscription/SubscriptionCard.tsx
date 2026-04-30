@@ -234,7 +234,7 @@ export default function SubscriptionCard({
             <Button
               onClick={handleResume}
               disabled={isLoading}
-              className="flex-1 gradient-brand text-white"
+              className="flex-1 bg-primary text-white"
             >
               {resumeMutation.isPending ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

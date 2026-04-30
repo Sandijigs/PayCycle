@@ -20,8 +20,7 @@ import {
   Check,
 } from "lucide-react";
 import type { PlanData } from "@/types/subscription";
-import { TOKENS } from "@/lib/contracts";
-import { INTERVALS, INTERVAL_LABELS, type IntervalKey } from "@/types/subscription";
+import { resolveToken, formatAmount, formatInterval } from "@/lib/utils";
 
 export default function ShareablePlanPage() {
   const params = useParams();
@@ -61,27 +60,10 @@ export default function ShareablePlanPage() {
   }, [planId, getPlan]);
 
   // Resolve display values
-  const tokenInfo = plan
-    ? Object.values(TOKENS).find((t) => t.address === plan.token)
-    : null;
-  const tokenSymbol = tokenInfo?.symbol || "TOKEN";
-  const decimals = tokenInfo?.decimals || 7;
-  const displayAmount = plan
-    ? (Number(plan.amount) / 10 ** decimals).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-    : "0";
-  const intervalLabel = plan
-    ? (Object.entries(INTERVALS).find(
-        ([, seconds]) => seconds === plan.interval
-      )?.[0] as IntervalKey | undefined)
-    : undefined;
-  const intervalDisplay = intervalLabel
-    ? INTERVAL_LABELS[intervalLabel].toLowerCase()
-    : plan
-    ? `${Math.round(plan.interval / 3600)}h`
-    : "";
+  const token = plan ? resolveToken(plan.token) : { symbol: "TOKEN", decimals: 7 };
+  const tokenSymbol = token.symbol;
+  const displayAmount = plan ? formatAmount(plan.amount, token.decimals) : "0";
+  const intervalDisplay = plan ? formatInterval(plan.interval) : "";
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(window.location.href);
@@ -173,7 +155,7 @@ export default function ShareablePlanPage() {
 
       {/* Plan card */}
       <Card className="rounded-2xl border-border/50 overflow-hidden">
-        <div className="h-1.5 gradient-brand" />
+        <div className="h-1.5 bg-primary" />
         <CardContent className="pt-6 space-y-6">
           {/* Plan name + status */}
           <div>
@@ -207,7 +189,7 @@ export default function ShareablePlanPage() {
           {/* CTA */}
           {isConnected ? (
             <Button
-              className="w-full gradient-brand text-white rounded-xl h-12 text-base"
+              className="w-full bg-primary text-white rounded-xl h-12 text-base"
               onClick={() => setShowSubscribe(true)}
             >
               Subscribe Now
@@ -215,7 +197,7 @@ export default function ShareablePlanPage() {
           ) : (
             <div className="space-y-3">
               <Button
-                className="w-full gradient-brand text-white rounded-xl h-12 text-base"
+                className="w-full bg-primary text-white rounded-xl h-12 text-base"
                 onClick={connect}
                 disabled={isConnecting}
               >
@@ -257,6 +239,44 @@ export default function ShareablePlanPage() {
               </>
             )}
           </button>
+        </CardContent>
+      </Card>
+
+      {/* How It Works — trust explainer based on user feedback */}
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="pt-6 space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            How It Works
+          </h2>
+          <div className="space-y-3">
+            {[
+              {
+                icon: Shield,
+                title: "You set a spending cap",
+                desc: "You choose the maximum amount the contract can charge per cycle. Even if the plan price changes, your cap is enforced on-chain.",
+              },
+              {
+                icon: Wallet,
+                title: "Funds stay in your wallet",
+                desc: "No deposits, no escrow. Your tokens remain in your wallet until the exact moment a payment executes.",
+              },
+              {
+                icon: Clock,
+                title: "Cancel instantly, anytime",
+                desc: "One click to cancel. No lock-in periods, no pending cancellations. Takes effect immediately.",
+              },
+            ].map((step) => (
+              <div key={step.title} className="flex items-start gap-3">
+                <div className="h-8 w-8 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <step.icon className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">{step.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 

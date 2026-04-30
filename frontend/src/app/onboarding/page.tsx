@@ -80,7 +80,7 @@ export default function OnboardingPage() {
         </Badge>
         <h1 className="text-3xl font-bold tracking-tight">
           Get started with{" "}
-          <span className="gradient-text">PayCycle</span>
+          <span className="text-primary">PayCycle</span>
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto">
           Set up your wallet and create your first subscription plan in under 5 minutes.
@@ -93,7 +93,7 @@ export default function OnboardingPage() {
           <div key={step.title} className="flex-1 flex items-center gap-2">
             <div
               className={`h-1.5 flex-1 rounded-full transition-colors ${
-                stepComplete(i) ? "gradient-brand" : i === activeStep ? "bg-primary/40" : "bg-border"
+                stepComplete(i) ? "bg-primary" : i === activeStep ? "bg-primary/40" : "bg-border"
               }`}
             />
           </div>
@@ -113,7 +113,7 @@ export default function OnboardingPage() {
               key={step.title}
               className={`rounded-2xl transition-all duration-300 ${
                 isActive
-                  ? "border-primary/30 glow-primary"
+                  ? "border-primary/30"
                   : isDone
                   ? "border-accent/30 opacity-80"
                   : "border-border/50 opacity-50"
@@ -127,7 +127,7 @@ export default function OnboardingPage() {
                       isDone
                         ? "bg-accent/20"
                         : isActive
-                        ? "gradient-brand-subtle"
+                        ? "bg-primary/5"
                         : "bg-muted"
                     }`}
                   >
@@ -184,7 +184,7 @@ export default function OnboardingPage() {
       <Card className="rounded-2xl border-border/50">
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
-            <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center flex-shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center flex-shrink-0">
               <ArrowRight className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -244,7 +244,7 @@ function StepInstallFreighter({
           </Button>
         </a>
         <Button
-          className="gradient-brand text-white rounded-xl text-sm"
+          className="bg-primary text-white rounded-xl text-sm"
           onClick={connect}
           disabled={isConnecting}
         >
@@ -290,7 +290,7 @@ function StepSwitchTestnet({
         </li>
       </ol>
       <Button
-        className="gradient-brand text-white rounded-xl text-sm"
+        className="bg-primary text-white rounded-xl text-sm"
         onClick={connect}
         disabled={isConnecting}
       >
@@ -341,7 +341,7 @@ function StepFundWallet({
         </p>
       )}
       <Button
-        className="gradient-brand text-white rounded-xl text-sm"
+        className="bg-primary text-white rounded-xl text-sm"
         onClick={onFund}
         disabled={isFunding || !address}
       >
@@ -380,7 +380,7 @@ function StepCreatePlan({ onGo }: { onGo: () => void }) {
         Once created, you&apos;ll get a shareable link to send to subscribers.
       </p>
       <Button
-        className="gradient-brand text-white rounded-xl text-sm"
+        className="bg-primary text-white rounded-xl text-sm"
         onClick={onGo}
       >
         <Rocket className="h-4 w-4 mr-2" />

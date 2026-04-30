@@ -112,7 +112,7 @@ export default function NotificationBell() {
       >
         <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full gradient-brand text-[10px] font-bold text-white">
+          <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-primary text-[10px] font-bold text-white">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -202,7 +202,7 @@ function NotificationRow({
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium truncate">{notification.title}</p>
           {!notification.read && (
-            <span className="h-2 w-2 rounded-full gradient-brand flex-shrink-0" />
+            <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
           )}
         </div>
         <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">

@@ -42,7 +42,7 @@ export default function PlansPage() {
   if (!isConnected) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
+        <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
           <Wallet className="h-7 w-7 text-primary" />
         </div>
         <h1 className="text-2xl font-bold mb-2">My Subscription Plans</h1>
@@ -58,7 +58,7 @@ export default function PlansPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center">
+          <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center">
             <Plus className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -81,7 +81,7 @@ export default function PlansPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center flex-shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center flex-shrink-0">
             <LayoutGrid className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -93,7 +93,7 @@ export default function PlansPage() {
         </div>
         <Button
           onClick={() => setShowCreateForm(true)}
-          className="gradient-brand text-white rounded-xl w-full sm:w-auto"
+          className="bg-primary text-white rounded-xl w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
           Create New Plan
@@ -123,7 +123,7 @@ export default function PlansPage() {
       {/* Empty state */}
       {!isLoading && !error && plans && plans.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
             <LayoutGrid className="h-7 w-7 text-primary" />
           </div>
           <h2 className="text-xl font-semibold mb-2">No plans yet</h2>
@@ -132,7 +132,7 @@ export default function PlansPage() {
           </p>
           <Button
             onClick={() => setShowCreateForm(true)}
-            className="gradient-brand text-white rounded-xl"
+            className="bg-primary text-white rounded-xl"
           >
             <Plus className="h-4 w-4 mr-2" />
             Create Your First Plan

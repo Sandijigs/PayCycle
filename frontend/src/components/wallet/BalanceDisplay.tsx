@@ -47,7 +47,7 @@ export default function BalanceDisplay() {
   if (!isConnected) {
     return (
       <div className="rounded-2xl border border-border/50 bg-card p-6 flex flex-col items-center justify-center min-h-[280px] text-center">
-        <div className="h-14 w-14 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-4">
+        <div className="h-14 w-14 rounded-2xl bg-primary/5 flex items-center justify-center mb-4">
           <Wallet className="h-6 w-6 text-primary" />
         </div>
         <p className="text-lg font-semibold text-foreground mb-1">Your Wallet</p>
@@ -61,7 +61,7 @@ export default function BalanceDisplay() {
   return (
     <div className="rounded-2xl border border-border/50 bg-card overflow-hidden flex flex-col">
       {/* Gradient header with XLM balance */}
-      <div className="gradient-brand p-6">
+      <div className="bg-primary p-6">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-medium text-white/70">XLM Balance</p>
           {!isLoading && (

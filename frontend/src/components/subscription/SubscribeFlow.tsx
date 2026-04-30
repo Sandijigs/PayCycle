@@ -116,7 +116,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
             <div
               key={s}
               className={`h-1.5 flex-1 rounded-full transition-colors ${
-                s <= step ? "gradient-brand" : "bg-border"
+                s <= step ? "bg-primary" : "bg-border"
               }`}
             />
           ))}
@@ -272,7 +272,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
           <Button
             onClick={() => setStep(2)}
             disabled={!maxAmount || parseFloat(maxAmount) <= 0}
-            className="gradient-brand text-white"
+            className="bg-primary text-white"
           >
             Continue
           </Button>
@@ -282,7 +282,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
           <Button
             onClick={handleApprove}
             disabled={isApproving || approvalStatus === "success"}
-            className="gradient-brand text-white"
+            className="bg-primary text-white"
           >
             {isApproving ? (
               <>
@@ -304,7 +304,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
           <Button
             onClick={handleSubscribe}
             disabled={isSubscribing || subscribeStatus === "success"}
-            className="gradient-brand text-white"
+            className="bg-primary text-white"
           >
             {isSubscribing ? (
               <>

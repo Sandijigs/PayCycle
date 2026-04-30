@@ -62,7 +62,7 @@ export default function MobileNav() {
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "gradient-brand-subtle text-primary"
+                      ? "bg-primary/5 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   }`}
                 >

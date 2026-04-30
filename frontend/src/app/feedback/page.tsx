@@ -18,7 +18,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="max-w-lg mx-auto text-center py-16 space-y-6">
-      <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mx-auto">
+      <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mx-auto">
         <MessageSquare className="h-8 w-8 text-primary" />
       </div>
 
@@ -36,7 +36,7 @@ export default function FeedbackPage() {
             You should be redirected automatically. If not, click below:
           </p>
           <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer">
-            <Button className="w-full gradient-brand text-white rounded-xl h-11">
+            <Button className="w-full bg-primary text-white rounded-xl h-11">
               Open Feedback Form
               <ExternalLink className="h-4 w-4 ml-2" />
             </Button>

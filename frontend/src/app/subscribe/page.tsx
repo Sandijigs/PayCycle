@@ -53,7 +53,7 @@ export default function SubscribePage() {
   if (!isConnected) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
+        <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
           <Wallet className="h-7 w-7 text-primary" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Subscriptions</h1>
@@ -85,7 +85,7 @@ export default function SubscribePage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-xl gradient-brand-subtle flex items-center justify-center">
+        <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center">
           <Grid3x3 className="h-5 w-5 text-primary" />
         </div>
         <div>
@@ -103,7 +103,7 @@ export default function SubscribePage() {
             onClick={() => setActiveTab("my")}
             className={`pb-3 px-1 transition-all relative ${
               activeTab === "my"
-                ? "border-b-2 border-primary gradient-text font-semibold"
+                ? "border-b-2 border-primary text-primary font-semibold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -116,7 +116,7 @@ export default function SubscribePage() {
             onClick={() => setActiveTab("browse")}
             className={`pb-3 px-1 transition-all relative ${
               activeTab === "browse"
-                ? "border-b-2 border-primary gradient-text font-semibold"
+                ? "border-b-2 border-primary text-primary font-semibold"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -154,7 +154,7 @@ export default function SubscribePage() {
           {/* Empty state */}
           {!isLoadingSubscriptions && !subscriptionsError && mySubscriptions && mySubscriptions.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
+              <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
                 <List className="h-7 w-7 text-primary" />
               </div>
               <h2 className="text-xl font-semibold mb-2">No subscriptions yet</h2>
@@ -163,7 +163,7 @@ export default function SubscribePage() {
               </p>
               <Button
                 onClick={() => setActiveTab("browse")}
-                className="gradient-brand text-white rounded-xl"
+                className="bg-primary text-white rounded-xl"
               >
                 Browse Plans
               </Button>
@@ -212,7 +212,7 @@ export default function SubscribePage() {
           {/* Empty state */}
           {!isLoadingPlans && !plansError && allPlans && allPlans.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="h-16 w-16 rounded-2xl gradient-brand-subtle flex items-center justify-center mb-6">
+              <div className="h-16 w-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6">
                 <Grid3x3 className="h-7 w-7 text-primary" />
               </div>
               <h2 className="text-xl font-semibold mb-2">No plans available</h2>

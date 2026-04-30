@@ -91,7 +91,7 @@ export default function CreatePlanForm({ onSuccess, onCancel }: CreatePlanFormPr
             <div
               key={s}
               className={`h-1.5 flex-1 rounded-full transition-colors ${
-                s <= step ? "gradient-brand" : "bg-border"
+                s <= step ? "bg-primary" : "bg-border"
               }`}
             />
           ))}
@@ -242,7 +242,7 @@ export default function CreatePlanForm({ onSuccess, onCancel }: CreatePlanFormPr
           <Button
             onClick={() => setStep(step + 1)}
             disabled={step === 1 ? !step1Valid : !step2Valid}
-            className="gradient-brand text-white"
+            className="bg-primary text-white"
           >
             Next
             <ArrowRight className="h-4 w-4 ml-2" />
@@ -251,7 +251,7 @@ export default function CreatePlanForm({ onSuccess, onCancel }: CreatePlanFormPr
           <Button
             onClick={handleSubmit}
             disabled={isLoading || txStatus === "success"}
-            className="gradient-brand text-white"
+            className="bg-primary text-white"
           >
             {isLoading ? (
               <>
