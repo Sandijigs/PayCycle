@@ -1,106 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import SendXLM from "@/components/transaction/SendXLM";
+import { useRouter } from "next/navigation";
 import { useWallet } from "@/hooks/useWallet";
-import { useBalance } from "@/hooks/useBalance";
-import {
-  Droplets,
-  Loader2,
-  Shield,
-  Clock,
-  Zap,
-  Eye,
-  ArrowRight,
-} from "lucide-react";
-import { useState } from "react";
+import { Shield, Clock, Zap, Eye, ArrowRight } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { address, isConnected } = useWallet();
-  const { xlm, refetch } = useBalance(address);
-  const [isFunding, setIsFunding] = useState(false);
-  const [fundingMessage, setFundingMessage] = useState<string | null>(null);
+  const { isConnected } = useWallet();
+  const router = useRouter();
 
-  const handleFundWithFriendbot = async () => {
-    if (!address) return;
-    setIsFunding(true);
-    setFundingMessage(null);
-    try {
-      const response = await fetch(
-        `https://friendbot.stellar.org?addr=${address}`,
-      );
-      if (response.ok) {
-        setFundingMessage("Successfully funded with 10,000 XLM!");
-        setTimeout(() => refetch(), 2000);
-      } else {
-        setFundingMessage("Friendbot funding failed. Try again later.");
-      }
-    } catch {
-      setFundingMessage("Error connecting to Friendbot");
-    } finally {
-      setIsFunding(false);
-      setTimeout(() => setFundingMessage(null), 5000);
+  useEffect(() => {
+    if (isConnected) {
+      router.replace("/dashboard");
     }
-  };
-
-  if (isConnected) {
-    return (
-      <div className="max-w-md mx-auto px-6 py-8 space-y-8">
-        <div className="text-center pt-4">
-          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
-          <p className="text-base text-muted-foreground mt-1">
-            Manage your plans and subscriptions from the dashboard.
-          </p>
-          <div className="flex justify-center gap-3 mt-4">
-            <Link
-              href="/dashboard"
-              className="px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/plans"
-              className="px-5 py-2.5 rounded-lg border border-border text-sm font-medium hover:bg-card transition-colors"
-            >
-              My Plans
-            </Link>
-          </div>
-        </div>
-
-        {(xlm === "0" || !xlm) && (
-          <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-border bg-card">
-            <div>
-              <p className="text-sm font-medium">Account not funded</p>
-              <p className="text-xs text-muted-foreground">
-                Get free testnet XLM
-              </p>
-            </div>
-            <button
-              onClick={handleFundWithFriendbot}
-              disabled={isFunding}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              {isFunding ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Droplets className="h-3.5 w-3.5" />
-              )}
-              {isFunding ? "Funding..." : "Fund"}
-            </button>
-          </div>
-        )}
-        {fundingMessage && (
-          <p
-            className={`text-xs text-center ${fundingMessage.includes("Success") ? "text-accent" : "text-destructive"}`}
-          >
-            {fundingMessage}
-          </p>
-        )}
-
-        <SendXLM />
-      </div>
-    );
-  }
+  }, [isConnected, router]);
 
   return (
     <div>

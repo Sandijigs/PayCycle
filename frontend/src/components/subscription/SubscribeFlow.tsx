@@ -66,7 +66,7 @@ export default function SubscribeFlow({ plan, onSuccess, onCancel }: SubscribeFl
       const expiryLedger = 1_000_000; // Generous expiry
 
       // Get contract ID from env
-      const contractId = process.env.NEXT_PUBLIC_CONTRACT_ID || "";
+      const contractId = process.env.NEXT_PUBLIC_SUBSCRIPTION_CONTRACT_ID || "";
 
       await approveToken(plan.token, contractId, maxAmountStroops, expiryLedger);
 
